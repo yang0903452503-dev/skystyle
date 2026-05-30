@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.DS_Store
+.env
+
+# Python / backup files
+app_backup*.py
+backup_before_figma/
+backup_success/
+
+# HTML backups
+templates/main_backup*.html
+templates/main_broken_backup_before_restore.html
+
+# Word temporary files
+templates/~$*

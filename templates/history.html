@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧氣象穿搭指南 - 歷史紀錄</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .history-visual {
+            background: linear-gradient(135deg, #dbeafe, #fef3c7);
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+<header class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+    <a href="/" class="text-lg font-bold tracking-wider text-[#4D4632]">
+        智慧氣象穿搭指南
+    </a>
+
+    <nav class="hidden md:flex space-x-8 text-sm font-medium">
+        <a href="/" class="text-gray-500 hover:text-[#725C00] transition-colors">首頁</a>
+        <a href="/history" class="text-gray-900 border-b-2 border-yellow-400 pb-1 hover:text-[#725C00] transition-colors">歷史紀錄</a>
+        <a href="#" class="text-gray-500 hover:text-[#725C00] transition-colors">設定</a>
+    </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+        <div>
+            <h1 class="text-2xl font-bold mb-2">歷史紀錄</h1>
+            <p class="text-sm text-gray-500">回顧您過去查詢的氣象預報與穿搭建議。</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto items-center">
+            <div class="relative w-full sm:w-72 group">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+
+                <input
+                    id="searchInput"
+                    type="text"
+                    placeholder="輸入日期或地點查詢"
+                    class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 hover:border-yellow-300 text-gray-600 bg-white transition-all"
+                >
+            </div>
+
+            <div class="relative flex bg-gray-100 p-1 rounded-full w-full sm:w-[240px]">
+                <button data-filter="all" class="filter-btn flex-1 text-center py-1.5 text-sm font-medium rounded-full bg-white shadow-sm text-gray-900">全部</button>
+                <button data-filter="month" class="filter-btn flex-1 text-center py-1.5 text-sm font-medium rounded-full text-gray-500">本月</button>
+                <button data-filter="week" class="filter-btn flex-1 text-center py-1.5 text-sm font-medium rounded-full text-gray-500">本週</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="emptyState" class="hidden bg-white border border-gray-100 rounded-3xl p-10 text-center shadow-sm">
+        <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fa-regular fa-clock text-gray-400 text-2xl"></i>
+        </div>
+
+        <h2 class="font-bold text-lg mb-2">目前沒有歷史紀錄</h2>
+        <p class="text-gray-500 text-sm mb-6">請先回首頁查詢一次穿搭建議，查詢成功後這裡就會出現紀錄。</p>
+
+        <a href="/" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 px-6 py-3 rounded-full font-bold text-gray-900">
+            回首頁查詢 <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div id="historyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"></div>
+
+    <div class="flex justify-center gap-3">
+        <button id="loadMoreBtn" class="hidden flex items-center gap-2 border border-gray-300 text-gray-600 px-8 py-2.5 rounded-full text-sm font-medium hover:bg-yellow-400 hover:text-black hover:border-yellow-400 active:scale-95 transition-all duration-300">
+            載入更多 <i class="fa-solid fa-chevron-down"></i>
+        </button>
+
+        <button id="clearBtn" class="hidden flex items-center gap-2 border border-red-200 text-red-500 px-8 py-2.5 rounded-full text-sm font-medium hover:bg-red-50 active:scale-95 transition-all duration-300">
+            清除紀錄 <i class="fa-regular fa-trash-can"></i>
+        </button>
+    </div>
+
+</main>
+
+<script>
+    const STORAGE_KEY = "skystyle_history";
+
+    let allHistory = [];
+
+    try {
+        allHistory = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    } catch (e) {
+        allHistory = [];
+    }
+
+    let currentFilter = "all";
+    let visibleCount = 4;
+
+    const historyGrid = document.getElementById("historyGrid");
+    const emptyState = document.getElementById("emptyState");
+    const searchInput = document.getElementById("searchInput");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+
+    function parseDate(text) {
+        if (!text) return null;
+
+        const d = new Date(String(text).replaceAll("/", "-"));
+
+        if (isNaN(d.getTime())) return null;
+        return d;
+    }
+
+    function getRecordDate(item) {
+        return parseDate(item.targetTime) || parseDate(item.matchedTime) || parseDate(item.savedAt);
+    }
+
+    function getMonthDateLabel(item) {
+        const d = getRecordDate(item);
+
+        if (!d) return "查詢紀錄";
+        return ${d.getMonth() + 1}月${d.getDate()}日;
+    }
+
+    function getTimeLabel(item) {
+        const raw = item.targetTime || item.matchedTime || item.savedAt;
+
+        if (!raw) return "--:--";
+
+        const match = String(raw).match(/(\d{1,2}):(\d{2})/);
+
+        if (match) {
+            return ${match[1].padStart(2, "0")}:${match[2]};
+        }
+
+        const d = parseDate(raw);
+
+        if (!d) return "--:--";
+
+        return ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")};
+    }
+
+    function getDateSearchText(item) {
+        const d = getRecordDate(item);
+
+        if (!d) return "";
+
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return [
+            ${y}/${m}/${day},
+            ${y}-${m}-${day},
+            ${m}/${day},
+            ${Number(m)}/${Number(day)},
+            ${Number(m)}月${Number(day)}日,
+            ${m}月${day}日
+        ].join(" ");
+    }
+
+    function getWeatherIcon(item, size = "large") {
+    if (!item) return "";
+
+    const file = item.weatherIcon || item.weather_icon || "";
+
+    if (!file) return "";
+
+    const cls = size === "small"
+        ? "w-5 h-5 inline-block object-contain"
+        : "w-16 h-16 mx-auto object-contain";
+
+    return <img src="/static/weather_icon/${file}" alt="${item.weather || "天氣圖示"}" class="${cls}">;
+}
+
+    function splitClothing(clothing) {
+        if (!clothing) return ["--", "--"];
+
+        const parts = clothing.split("+");
+
+        return [
+            parts[0] ? parts[0].trim() : "--",
+            parts[1] ? parts[1].trim() : "--"
+        ];
+    }
+
+    function isSameMonth(date, now) {
+        if (!date) return false;
+
+        return date.getFullYear() === now.getFullYear() &&
+               date.getMonth() === now.getMonth();
+    }
+
+    function isSameWeek(date, now) {
+        if (!date) return false;
+
+        const today = new Date(now);
+        const day = today.getDay();
+        const diffToMonday = day === 0 ? -6 : 1 - day;
+
+        const weekStart = new Date(today);
+        weekStart.setDate(today.getDate() + diffToMonday);
+        weekStart.setHours(0, 0, 0, 0);
+
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 7);
+        weekEnd.setHours(0, 0, 0, 0);
+
+        return date >= weekStart && date < weekEnd;
+    }
+
+    function inFilterRange(item) {
+        const d = getRecordDate(item);
+        const now = new Date();
+
+        if (currentFilter === "all") return true;
+        if (currentFilter === "month") return isSameMonth(d, now);
+        if (currentFilter === "week") return isSameWeek(d, now);
+
+        return true;
+    }
+
+    function matchSearch(item) {
+        const keyword = searchInput.value.trim().toLowerCase();
+
+        if (!keyword) return true;
+
+        const locationText = String(item.location || "").toLowerCase();
+        const dateText = getDateSearchText(item).toLowerCase();
+
+        return locationText.includes(keyword) || dateText.includes(keyword);
+    }
+
+    function sortNewestFirst(records) {
+        return records.slice().sort((a, b) => {
+            const da = getRecordDate(a) || new Date(0);
+            const db = getRecordDate(b) || new Date(0);
+
+            return db - da;
+        });
+    }
+
+    function render() {
+        const filtered = sortNewestFirst(allHistory)
+            .filter(inFilterRange)
+            .filter(matchSearch);
+
+        historyGrid.innerHTML = "";
+
+        if (filtered.length === 0) {
+            emptyState.classList.remove("hidden");
+            loadMoreBtn.classList.add("hidden");
+            clearBtn.classList.toggle("hidden", allHistory.length === 0);
+            return;
+        }
+
+        emptyState.classList.add("hidden");
+        clearBtn.classList.remove("hidden");
+
+        const shown = filtered.slice(0, visibleCount);
+
+        shown.forEach(item => {
+            const [top, bottom] = splitClothing(item.clothing);
+
+            const card = document.createElement("div");
+            card.className = "bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer group transform-gpu";
+
+            card.innerHTML = `
+                <div class="relative h-48 history-visual overflow-hidden rounded-t-2xl z-0 transform-gpu flex items-center justify-center">
+
+                    <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-3 py-2 rounded-md text-gray-700 z-10 shadow-sm">
+                        <div class="flex items-center gap-1">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span>${getMonthDateLabel(item)}</span>
+                        </div>
+                        <div class="mt-1 text-[11px] text-gray-500">
+                            時間 ${getTimeLabel(item)}
+                        </div>
+                    </div>
+
+                    <div class="text-center text-gray-700 px-6">
+                        <div class="text-5xl mb-3">
+                            ${getWeatherIcon(item, "large")}
+                        </div>
+                        <div class="font-extrabold text-2xl">${item.temp ?? "--"}°C</div>
+                        <div class="text-sm mt-1">${item.weather || "--"}</div>
+                    </div>
+                </div>
+
+                <div class="p-5">
+                    <h3 class="font-bold text-gray-800 text-lg mb-1 group-hover:text-yellow-600 transition-colors">
+                        ${item.location || "--"}
+                    </h3>
+
+                    <div class="flex items-center text-sm text-gray-500 mb-4 gap-1">
+                        ${getWeatherIcon(item, "small")}
+                        ${item.temp ?? "--"}°C・${item.comfort || "--"}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-md font-medium truncate">${item.coat || "--"}</span>
+                        <span class="bg-green-50 text-green-700 px-2 py-1 rounded-md font-medium truncate">${top}</span>
+                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md font-medium truncate">${bottom}</span>
+                        <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-md font-medium truncate">${item.umbrella || "--"}</span>
+                    </div>
+                </div>
+            `;
+
+            historyGrid.appendChild(card);
+        });
+
+        if (filtered.length > visibleCount) {
+            loadMoreBtn.classList.remove("hidden");
+        } else {
+            loadMoreBtn.classList.add("hidden");
+        }
+    }
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            currentFilter = btn.dataset.filter;
+            visibleCount = 4;
+
+            filterButtons.forEach(b => {
+                b.classList.remove("bg-white", "shadow-sm", "text-gray-900");
+                b.classList.add("text-gray-500");
+            });
+
+            btn.classList.add("bg-white", "shadow-sm", "text-gray-900");
+            btn.classList.remove("text-gray-500");
+
+            render();
+        });
+    });
+
+    searchInput.addEventListener("input", () => {
+        visibleCount = 4;
+        render();
+    });
+
+    loadMoreBtn.addEventListener("click", () => {
+        visibleCount += 4;
+        render();
+    });
+
+    clearBtn.addEventListener("click", () => {
+        const ok = confirm("確定要清除所有歷史紀錄嗎？");
+
+        if (!ok) return;
+
+        localStorage.removeItem(STORAGE_KEY);
+        allHistory = [];
+        render();
+    });
+
+    render();
+</script>
+
+</body>
+</html>
