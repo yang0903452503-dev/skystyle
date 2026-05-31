@@ -394,6 +394,256 @@
         transform: translateX(-40px) !important;
     }
 </style>
+
+<style id="history-final-override-style">
+    .history-record-card {
+        transition: border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .history-record-card:hover {
+        border-color: #F7D766;
+        box-shadow: 0 10px 24px rgba(77, 70, 50, 0.08);
+    }
+
+    #history-load-more-btn {
+        transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+    }
+
+    #history-load-more-btn:hover {
+        border-color: #F7D766;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(77, 70, 50, 0.08);
+    }
+</style>
+
+
+
+<style id="history-dedupe-single-style">
+    .history-record-card {
+        border: 1px solid #f1f1f1;
+        border-radius: 28px;
+        background: #ffffff;
+        transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+    }
+
+    .history-record-card:hover {
+        border-color: #F7D766;
+        box-shadow: 0 14px 32px rgba(77, 70, 50, 0.08);
+        transform: translateY(-1px);
+    }
+
+    .history-main-weather {
+        background: linear-gradient(135deg, #F2FAFD 0%, #EAF5FA 100%);
+    }
+
+    .history-mini-stat {
+        background: #F3FAFD;
+        border: 1px solid rgba(209, 231, 238, 0.55);
+    }
+
+    .history-outfit-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 8px 13px;
+        border-radius: 10px;
+        line-height: 1.35;
+    }
+
+    #history-load-more-btn {
+        transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+    }
+
+    #history-load-more-btn:hover {
+        border-color: #F7D766;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(77, 70, 50, 0.08);
+    }
+</style>
+
+
+
+
+<style id="history-compact-card-v3-style">
+    #history-record-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 22px !important;
+        align-items: start !important;
+    }
+
+    @media (max-width: 900px) {
+        #history-record-list {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    .history-record-card {
+        padding: 20px !important;
+        border-radius: 24px !important;
+        border: 1px solid #eef2f3 !important;
+        background: #ffffff !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.035) !important;
+        transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease !important;
+    }
+
+    .history-record-card:hover {
+        border-color: #F7D766 !important;
+        box-shadow: 0 12px 26px rgba(77, 70, 50, 0.08) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .history-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f3f4f6;
+        margin-bottom: 14px;
+    }
+
+    .history-small-title {
+        font-size: 12px;
+        font-weight: 800;
+        color: #9ca3af;
+        margin-bottom: 4px;
+    }
+
+    .history-time-value {
+        font-size: 18px;
+        font-weight: 900;
+        color: #1f2937;
+        letter-spacing: 0.02em;
+        line-height: 1.2;
+    }
+
+    .history-badge {
+        background: #FFF4BD;
+        color: #7A5A00;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .history-place {
+        margin-bottom: 14px;
+    }
+
+    .history-location {
+        font-size: 22px;
+        line-height: 1.25;
+        font-weight: 900;
+        color: #1f2937;
+        margin-bottom: 6px;
+    }
+
+    .history-forecast {
+        font-size: 13px;
+        color: #9ca3af;
+        font-weight: 600;
+    }
+
+    .history-weather-summary {
+        display: grid;
+        grid-template-columns: 46px 1fr auto;
+        align-items: center;
+        gap: 12px;
+        background: linear-gradient(135deg, #F6FBFD 0%, #ECF7FA 100%);
+        border: 1px solid rgba(203, 226, 233, 0.75);
+        border-radius: 18px;
+        padding: 13px 16px;
+        margin-bottom: 12px;
+    }
+
+    .history-weather-icon {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+    }
+
+    .history-weather-text {
+        font-size: 18px;
+        font-weight: 900;
+        color: #0A4B5D;
+        line-height: 1.2;
+    }
+
+    .history-weather-label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #7b8794;
+        margin-bottom: 3px;
+    }
+
+    .history-temp-value {
+        font-size: 24px;
+        font-weight: 900;
+        color: #0A4B5D;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .history-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 9px;
+        margin-bottom: 13px;
+    }
+
+    @media (max-width: 1100px) {
+        .history-stat-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    .history-stat {
+        min-height: 58px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: #F7FBFC;
+        border: 1px solid rgba(214, 230, 236, 0.9);
+    }
+
+    .history-stat-label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #7b8794;
+        margin-bottom: 4px;
+    }
+
+    .history-stat-value {
+        font-size: 15px;
+        font-weight: 900;
+        color: #114B5F;
+        line-height: 1.2;
+    }
+
+    .history-outfit-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    @media (max-width: 640px) {
+        .history-outfit-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .history-outfit-chip {
+        min-height: 34px;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.35;
+        display: flex;
+        align-items: center;
+    }
+</style>
+
 </head>
 <body class="text-gray-800 overflow-y-scroll">
 <header class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
@@ -2532,6 +2782,1476 @@ const translations = {
         setTimeout(window.renderHistory, 100);
         setTimeout(window.renderHistory, 500);
     });
+})();
+</script>
+
+
+<script id="history-display-safe-fix">
+(function () {
+    const SERVER_HISTORY_PAYLOAD = {
+        result: {{ result|default({}, true)|tojson }},
+        county: {{ county|default('', true)|tojson }},
+        city: {{ city|default('', true)|tojson }},
+        selected_city: {{ selected_city|default('', true)|tojson }},
+        town: {{ town|default('', true)|tojson }},
+        district: {{ district|default('', true)|tojson }},
+        selected_district: {{ selected_district|default('', true)|tojson }},
+        date: {{ date|default('', true)|tojson }},
+        selected_date: {{ selected_date|default('', true)|tojson }},
+        time: {{ time|default('', true)|tojson }},
+        selected_time: {{ selected_time|default('', true)|tojson }}
+    };
+
+    function first(obj, keys, fallback = "") {
+        for (const key of keys) {
+            if (obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") {
+                return obj[key];
+            }
+        }
+        return fallback;
+    }
+
+    function clean(text) {
+        const t = String(text || "").trim();
+        if (!t || t === "--" || t === "請選擇" || t === "縣市" || t === "鄉鎮市區") return "";
+        return t;
+    }
+
+    function selectedValue(selectors) {
+        for (const selector of selectors) {
+            const el = document.querySelector(selector);
+            if (!el) continue;
+
+            if (el.tagName && el.tagName.toLowerCase() === "select") {
+                const opt = el.options && el.options[el.selectedIndex];
+                const optText = clean(opt ? opt.textContent : "");
+                if (optText) return optText;
+
+                const value = clean(el.value);
+                if (value) return value;
+            } else {
+                const value = clean(el.value);
+                if (value) return value;
+            }
+        }
+        return "";
+    }
+
+    function formatDate(dateText) {
+        const t = clean(dateText);
+        if (!t) return "";
+        return t.replaceAll("-", "/");
+    }
+
+    function selectedDateTime(dateText, timeText) {
+        const d = formatDate(dateText);
+        const t = clean(timeText);
+
+        if (d && t) return d + " " + t;
+        if (d) return d;
+        if (t) return t;
+        return "";
+    }
+
+    function readHistory() {
+        try {
+            const data = JSON.parse(localStorage.getItem("skystyle_history") || "[]");
+            return Array.isArray(data) ? data : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveHistory(records) {
+        localStorage.setItem("skystyle_history", JSON.stringify(records.slice(0, 80)));
+    }
+
+    function getHomeText() {
+        const home = document.getElementById("home-view") || document.body;
+        return home ? (home.innerText || "") : "";
+    }
+
+    function extractFromOutfitCard(kind) {
+        const home = document.getElementById("home-view") || document.body;
+
+        const labelClass = {
+            coat: ".outfit-label-coat",
+            top: ".outfit-label-top",
+            bottom: ".outfit-label-bottoms",
+            umbrella: ".outfit-label-rain"
+        }[kind];
+
+        const label = home.querySelector(labelClass);
+        if (label) {
+            const card = label.closest(".outfit-card") || label.parentElement;
+            if (card) {
+                const main = card.querySelector(".outfit-main");
+                if (main && clean(main.textContent)) return clean(main.textContent);
+
+                const text = clean(card.textContent.replace(label.textContent, ""));
+                if (text) return text;
+            }
+        }
+
+        const labelText = {
+            coat: "外套",
+            top: "上衣",
+            bottom: "下著",
+            umbrella: "雨具"
+        }[kind];
+
+        const text = getHomeText();
+        const re = new RegExp(labelText + "\\s*[：:]\\s*([^\\n]+)");
+        const m = text.match(re);
+        if (m && clean(m[1])) return clean(m[1]);
+
+        return "";
+    }
+
+    function extractRainFromHome() {
+        const text = getHomeText();
+        const m = text.match(/降雨機率\s*[：:]?\s*(\d+(?:\.\d+)?\s*%?)/);
+        if (m) return m[1].replace(/\s+/g, "");
+        return "";
+    }
+
+    function makeCurrentRecord() {
+        const r = SERVER_HISTORY_PAYLOAD.result || {};
+
+        const county =
+            clean(first(SERVER_HISTORY_PAYLOAD, ["county", "city", "selected_city"], "")) ||
+            clean(first(r, ["county", "city", "selected_city", "縣市"], "")) ||
+            selectedValue(['select[name="county"]', 'select[name="city"]', '#county', '#city', '#selected_city']);
+
+        const town =
+            clean(first(SERVER_HISTORY_PAYLOAD, ["town", "district", "selected_district"], "")) ||
+            clean(first(r, ["town", "district", "selected_district", "鄉鎮市區"], "")) ||
+            selectedValue(['select[name="town"]', 'select[name="district"]', '#town', '#district', '#selected_district']);
+
+        const date =
+            clean(first(SERVER_HISTORY_PAYLOAD, ["date", "selected_date"], "")) ||
+            clean(first(r, ["date", "selected_date"], "")) ||
+            selectedValue(['input[name="date"]', '#date', '#selected_date', 'input[type="date"]']);
+
+        const time =
+            clean(first(SERVER_HISTORY_PAYLOAD, ["time", "selected_time"], "")) ||
+            clean(first(r, ["time", "selected_time"], "")) ||
+            selectedValue(['input[name="time"]', '#time', '#selected_time', 'input[type="time"]']);
+
+        const dateTime = selectedDateTime(date, time);
+
+        const weather = first(r, ["weather", "天氣"], "");
+        const temp = first(r, ["temp", "temperature", "Temperature", "溫度"], "");
+        const humidity = first(r, ["humidity", "RelativeHumidity", "濕度"], "");
+        const wind = first(r, ["wind_speed", "windSpeed", "WindSpeed", "風速"], "");
+        const apparent = first(r, ["apparent_temp", "apparent_temperature", "ApparentTemperature", "體感溫度"], "");
+
+        const coat =
+            first(r, ["coat", "jacket", "outer", "外套"], "") ||
+            extractFromOutfitCard("coat");
+
+        const top =
+            first(r, ["top", "shirt", "upper", "上衣"], "") ||
+            extractFromOutfitCard("top");
+
+        const bottom =
+            first(r, ["bottom", "pants", "lower", "下著"], "") ||
+            extractFromOutfitCard("bottom");
+
+        const umbrella =
+            first(r, ["umbrella", "rain_gear", "rainGear", "雨具"], "") ||
+            extractFromOutfitCard("umbrella");
+
+        const rain =
+            first(r, ["rain_prob", "rain_probability", "rainProbability", "PoP", "pop", "降雨機率"], "") ||
+            extractRainFromHome();
+
+        const matchedTime = first(r, ["matched_time", "forecast_time", "使用預報"], "");
+
+        const hasResult = weather || temp || humidity || wind || apparent || coat || top || bottom || umbrella;
+        if (!hasResult) return null;
+
+        const location = county && town ? county + " " + town : (county || town || "--");
+
+        return {
+            id: [dateTime, location, matchedTime, weather, temp, coat, top, bottom, umbrella].join("|"),
+            date: date,
+            time: time,
+            dateTime: dateTime || matchedTime || "--",
+            location: location,
+            county: county,
+            town: town,
+            matched_time: matchedTime || "--",
+            weather: weather || "--",
+            temp: temp || "--",
+            humidity: humidity || "--",
+            wind_speed: wind || "--",
+            apparent_temp: apparent || "--",
+            rain_probability: rain || "--",
+            coat: coat || "--",
+            top: top || "--",
+            bottom: bottom || "--",
+            umbrella: umbrella || "--"
+        };
+    }
+
+    function storeCurrentRecord() {
+        const record = makeCurrentRecord();
+        if (!record) return;
+
+        let records = readHistory();
+
+        records = records.filter(function (old) {
+            return old && old.id !== record.id;
+        });
+
+        records.unshift(record);
+        saveHistory(records);
+    }
+
+    function normalizeRecord(raw) {
+        const r = raw || {};
+        const county = first(r, ["county", "city", "縣市"], "");
+        const town = first(r, ["town", "district", "鄉鎮市區"], "");
+
+        const dateTime =
+            first(r, ["dateTime", "date_time", "查詢時間"], "") ||
+            selectedDateTime(first(r, ["date", "selected_date"], ""), first(r, ["time", "selected_time"], "")) ||
+            first(r, ["matched_time", "forecast_time"], "--");
+
+        return {
+            dateTime: dateTime || "--",
+            location: first(r, ["location", "place", "地點"], county && town ? county + " " + town : "--"),
+            matchedTime: first(r, ["matched_time", "forecast_time", "使用預報"], "--"),
+            weather: first(r, ["weather", "天氣"], "--"),
+            temp: first(r, ["temp", "temperature", "Temperature", "溫度"], "--"),
+            humidity: first(r, ["humidity", "RelativeHumidity", "濕度"], "--"),
+            wind: first(r, ["wind_speed", "windSpeed", "WindSpeed", "風速"], "--"),
+            apparent: first(r, ["apparent_temp", "apparent_temperature", "ApparentTemperature", "體感溫度"], "--"),
+            rain: first(r, ["rain_probability", "rain_prob", "rainProbability", "PoP", "pop", "降雨機率"], "--"),
+            coat: first(r, ["coat", "jacket", "outer", "外套"], "--"),
+            top: first(r, ["top", "shirt", "upper", "上衣"], "--"),
+            bottom: first(r, ["bottom", "pants", "lower", "下著"], "--"),
+            umbrella: first(r, ["umbrella", "rain_gear", "rainGear", "雨具"], "--")
+        };
+    }
+
+    function withUnit(value, unit) {
+        if (value === "--" || value === "" || value === null || value === undefined) return "--";
+        const text = String(value);
+        if (text.includes(unit)) return text;
+        return text + unit;
+    }
+
+    function historyCard(record) {
+        const r = normalizeRecord(record);
+
+        return `
+            <article class="history-record-card bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div class="flex justify-between items-start gap-4 mb-5">
+                    <div>
+                        <div class="text-xs text-gray-400 font-bold mb-1">查詢時間</div>
+                        <div class="text-sm font-bold text-gray-800">${r.dateTime}</div>
+                    </div>
+                    <div class="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full">歷史紀錄</div>
+                </div>
+
+                <div class="mb-5">
+                    <div class="text-xs text-gray-400 font-bold mb-1">查詢地點</div>
+                    <div class="text-lg font-bold text-gray-800">${r.location}</div>
+                    <div class="text-xs text-gray-400 mt-1">使用預報：${r.matchedTime}</div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-5 text-sm">
+                    <div class="bg-[#EAF5FA] rounded-xl p-3">
+                        <div class="text-xs text-gray-500 font-bold mb-1">天氣</div>
+                        <div class="font-bold text-[#0A4B5D]">${r.weather}</div>
+                    </div>
+                    <div class="bg-[#EAF5FA] rounded-xl p-3">
+                        <div class="text-xs text-gray-500 font-bold mb-1">溫度</div>
+                        <div class="font-bold text-[#0A4B5D]">${withUnit(r.temp, "°C")}</div>
+                    </div>
+                    <div class="bg-[#EAF5FA] rounded-xl p-3">
+                        <div class="text-xs text-gray-500 font-bold mb-1">濕度</div>
+                        <div class="font-bold text-[#0A4B5D]">${withUnit(r.humidity, "%")}</div>
+                    </div>
+                    <div class="bg-[#EAF5FA] rounded-xl p-3">
+                        <div class="text-xs text-gray-500 font-bold mb-1">風速</div>
+                        <div class="font-bold text-[#0A4B5D]">${withUnit(r.wind, " m/s")}</div>
+                    </div>
+                    <div class="bg-[#EAF5FA] rounded-xl p-3">
+                        <div class="text-xs text-gray-500 font-bold mb-1">體感溫度</div>
+                        <div class="font-bold text-[#0A4B5D]">${withUnit(r.apparent, "°C")}</div>
+                    </div>
+                    <div class="bg-[#EAF5FA] rounded-xl p-3">
+                        <div class="text-xs text-gray-500 font-bold mb-1">降雨機率</div>
+                        <div class="font-bold text-[#0A4B5D]">${withUnit(r.rain, "%")}</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 text-xs font-bold">
+                    <span class="bg-[#FFF6D8] text-[#7A5A00] px-3 py-1.5 rounded-md">外套：${r.coat}</span>
+                    <span class="bg-[#E6F0EA] text-[#3E6B4F] px-3 py-1.5 rounded-md">上衣：${r.top}</span>
+                    <span class="bg-[#F5E1D8] text-[#8A4A3A] px-3 py-1.5 rounded-md">下著：${r.bottom}</span>
+                    <span class="bg-[#EAF7FF] text-[#2F6F8F] px-3 py-1.5 rounded-md">雨具：${r.umbrella}</span>
+                </div>
+            </article>
+        `;
+    }
+
+    window.renderHistory = function () {
+        const list = document.getElementById("history-record-list");
+        const input = document.getElementById("history-search-input");
+        if (!list) return;
+
+        const keyword = input ? input.value.trim().toLowerCase() : "";
+
+        let records = readHistory().map(normalizeRecord);
+
+        if (keyword) {
+            records = records.filter(function (r) {
+                return JSON.stringify(r).toLowerCase().includes(keyword);
+            });
+        }
+
+        if (!records.length) {
+            list.innerHTML = `
+                <div class="col-span-full bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
+                    <div class="text-4xl text-gray-300 mb-4"><i class="fa-regular fa-folder-open"></i></div>
+                    <div class="font-bold text-gray-700 mb-2">目前沒有歷史紀錄</div>
+                    <div class="text-sm text-gray-400">回首頁完成一次查詢後，這裡會顯示氣象預報與穿搭建議。</div>
+                </div>
+            `;
+            return;
+        }
+
+        list.innerHTML = records.map(historyCard).join("");
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            storeCurrentRecord();
+
+            const input = document.getElementById("history-search-input");
+            if (input && !input.dataset.safeHistoryBound) {
+                input.dataset.safeHistoryBound = "true";
+                input.addEventListener("input", window.renderHistory);
+            }
+
+            if (document.getElementById("history-view")) {
+                window.renderHistory();
+            }
+        }, 300);
+    });
+
+    const oldSwitchTab = window.switchTab;
+    window.switchTab = function (tabId) {
+        if (typeof oldSwitchTab === "function") {
+            oldSwitchTab(tabId);
+        }
+
+        if (tabId === "history") {
+            setTimeout(window.renderHistory, 100);
+            setTimeout(window.renderHistory, 300);
+        }
+    };
+})();
+</script>
+
+
+
+<script id="history-dedupe-single-final">
+(function () {
+    const SERVER = {
+        result: {{ result|default({}, true)|tojson }},
+        date: {{ date|default('', true)|tojson }},
+        form_date: {{ form_date|default('', true)|tojson }},
+        form_hour: {{ form_hour|default('', true)|tojson }},
+        form_minute: {{ form_minute|default('', true)|tojson }},
+        county: {{ county|default('', true)|tojson }},
+        town: {{ town|default('', true)|tojson }},
+        form_county: {{ form_county|default('', true)|tojson }},
+        form_town: {{ form_town|default('', true)|tojson }},
+        wind_speed: {{ wind_speed|default('', true)|tojson }},
+        apparent_temp: {{ apparent_temp|default('', true)|tojson }},
+        rain_prob_number: {{ rain_prob_number|default('', true)|tojson }}
+    };
+
+    let historyShowAll = false;
+
+    function clean(v) {
+        const t = String(v ?? "").trim();
+        if (!t || t === "--" || t === "請選擇" || t === "縣市" || t === "鄉鎮市區") return "";
+        return t;
+    }
+
+    function first(obj, keys, fallback = "") {
+        for (const key of keys) {
+            const value = obj && obj[key];
+            if (value !== undefined && value !== null && value !== "") return value;
+        }
+        return fallback;
+    }
+
+    function getInputValue(id) {
+        const el = document.getElementById(id);
+        if (!el) return "";
+
+        if (el.tagName && el.tagName.toLowerCase() === "select") {
+            const option = el.options && el.options[el.selectedIndex];
+            const value = clean(el.value);
+            const text = clean(option ? option.textContent : "");
+            return value || text.replace(/[^\d]/g, "");
+        }
+
+        return clean(el.value);
+    }
+
+    function formatDate(v) {
+        const t = clean(v);
+        if (!t) return "";
+        return t.replaceAll("-", "/");
+    }
+
+    function two(v) {
+        const n = String(v ?? "").replace(/[^\d]/g, "");
+        if (!n) return "";
+        return n.padStart(2, "0");
+    }
+
+    function fixDateTimeText(v) {
+        let t = clean(v);
+        if (!t) return "";
+
+        t = t.replaceAll("-", "/");
+
+        const m = t.match(/^(\d{4}\/\d{1,2}\/\d{1,2})\s+(\d{1,2}):(\d{1,2})$/);
+        if (m) {
+            return m[1] + " " + two(m[2]) + ":" + two(m[3]);
+        }
+
+        return t;
+    }
+
+    function selectedDateTimeFromCurrentForm() {
+        const d =
+            formatDate(SERVER.form_date) ||
+            formatDate(SERVER.date) ||
+            formatDate(getInputValue("dateInput"));
+
+        const h =
+            two(SERVER.form_hour) ||
+            two(getInputValue("hourSelect"));
+
+        const m =
+            two(SERVER.form_minute) ||
+            two(getInputValue("minuteSelect"));
+
+        if (d && h && m) return d + " " + h + ":" + m;
+        if (d) return d;
+        return "";
+    }
+
+    function currentMatchedTime() {
+        const r = SERVER.result || {};
+        return clean(first(r, ["matched_time", "forecast_time", "time_text"], ""));
+    }
+
+    function currentLocation() {
+        const county =
+            clean(SERVER.form_county) ||
+            clean(SERVER.county) ||
+            clean(getInputValue("countySelect"));
+
+        const town =
+            clean(SERVER.form_town) ||
+            clean(SERVER.town) ||
+            clean(getInputValue("townSelect"));
+
+        if (county && town) return county + " " + town;
+        return county || town || "";
+    }
+
+    function homeText() {
+        const home = document.getElementById("home-view") || document.body;
+        return home.innerText || "";
+    }
+
+    function extractLabel(label) {
+        const text = homeText();
+        const re = new RegExp(label + "\\s*[：:]?\\s*([^\\n]+)");
+        const m = text.match(re);
+        return m ? clean(m[1]) : "";
+    }
+
+    function extractOutfit(kind) {
+        const home = document.getElementById("home-view") || document.body;
+
+        const classMap = {
+            coat: ".outfit-label-coat",
+            top: ".outfit-label-top",
+            bottom: ".outfit-label-bottoms",
+            umbrella: ".outfit-label-rain"
+        };
+
+        const label = home.querySelector(classMap[kind]);
+
+        if (label) {
+            const card = label.closest(".outfit-card") || label.parentElement;
+
+            if (card) {
+                const main = card.querySelector(".outfit-main");
+                if (main && clean(main.textContent)) return clean(main.textContent);
+
+                const text = clean(card.textContent.replace(label.textContent, ""));
+                if (text) return text;
+            }
+        }
+
+        const labelName = {
+            coat: "外套",
+            top: "上衣",
+            bottom: "下著",
+            umbrella: "雨具"
+        }[kind];
+
+        return extractLabel(labelName);
+    }
+
+    function readHistory() {
+        try {
+            const data = JSON.parse(localStorage.getItem("skystyle_history") || "[]");
+            return Array.isArray(data) ? data : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveHistory(records) {
+        localStorage.setItem("skystyle_history", JSON.stringify(records.slice(0, 80)));
+    }
+
+    function normalize(raw) {
+        const r = raw || {};
+        const county = clean(first(r, ["county", "city"], ""));
+        const town = clean(first(r, ["town", "district"], ""));
+
+        const dateTime =
+            fixDateTimeText(first(r, ["dateTime", "date_time", "created_at"], "")) ||
+            fixDateTimeText(
+                formatDate(first(r, ["date", "selected_date"], "")) +
+                (
+                    first(r, ["hour", "form_hour"], "") !== "" && first(r, ["minute", "form_minute"], "") !== ""
+                        ? " " + two(first(r, ["hour", "form_hour"], "")) + ":" + two(first(r, ["minute", "form_minute"], ""))
+                        : ""
+                )
+            ) ||
+            "--";
+
+        return {
+            id: clean(r.id),
+
+            dateTime: dateTime,
+
+            matchedTime:
+                clean(first(r, ["matchedTime", "matched_time", "forecast_time"], "")) ||
+                "--",
+
+            location:
+                clean(first(r, ["location", "place"], "")) ||
+                (county && town ? county + " " + town : "--"),
+
+            weather: clean(first(r, ["weather"], "")) || "--",
+            temp: clean(first(r, ["temp", "temperature"], "")) || "--",
+            humidity: clean(first(r, ["humidity"], "")) || "--",
+            wind: clean(first(r, ["wind", "wind_speed", "windSpeed"], "")) || "--",
+            apparent: clean(first(r, ["apparent", "apparent_temp", "apparent_temperature"], "")) || "--",
+            rain: clean(first(r, ["rain", "rain_probability", "rain_prob", "PoP"], "")) || "--",
+
+            coat: clean(first(r, ["coat"], "")) || "--",
+            top: clean(first(r, ["top"], "")) || "--",
+            bottom: clean(first(r, ["bottom"], "")) || "--",
+            umbrella: clean(first(r, ["umbrella"], "")) || "--"
+        };
+    }
+
+    function buildCurrentRecord() {
+        const r = SERVER.result || {};
+
+        const selectedDateTime = selectedDateTimeFromCurrentForm();
+        const matchedTime = currentMatchedTime() || "--";
+        const location = currentLocation() || "--";
+
+        const record = {
+            dateTime: selectedDateTime || "--",
+            matchedTime: matchedTime,
+            location: location,
+
+            weather:
+                clean(first(r, ["weather"], "")) ||
+                extractLabel("天氣") ||
+                "--",
+
+            temp:
+                clean(first(r, ["temp", "temperature"], "")) ||
+                extractLabel("溫度") ||
+                "--",
+
+            humidity:
+                clean(first(r, ["humidity"], "")) ||
+                extractLabel("濕度") ||
+                "--",
+
+            wind:
+                clean(first(r, ["wind_speed", "windSpeed", "WindSpeed"], "")) ||
+                clean(SERVER.wind_speed) ||
+                extractLabel("風速") ||
+                "--",
+
+            apparent:
+                clean(first(r, ["apparent_temp", "apparent_temperature", "ApparentTemperature"], "")) ||
+                clean(SERVER.apparent_temp) ||
+                extractLabel("體感溫度") ||
+                "--",
+
+            rain:
+                clean(first(r, ["rain_prob", "rain_probability", "rainProbability", "PoP", "pop"], "")) ||
+                clean(SERVER.rain_prob_number) ||
+                extractLabel("降雨機率") ||
+                "--",
+
+            coat:
+                clean(first(r, ["coat"], "")) ||
+                extractOutfit("coat") ||
+                "--",
+
+            top:
+                clean(first(r, ["top"], "")) ||
+                extractOutfit("top") ||
+                "--",
+
+            bottom:
+                clean(first(r, ["bottom"], "")) ||
+                extractOutfit("bottom") ||
+                "--",
+
+            umbrella:
+                clean(first(r, ["umbrella"], "")) ||
+                extractOutfit("umbrella") ||
+                "--"
+        };
+
+        const hasResult =
+            record.weather !== "--" ||
+            record.temp !== "--" ||
+            record.humidity !== "--" ||
+            record.coat !== "--" ||
+            record.top !== "--" ||
+            record.bottom !== "--";
+
+        if (!hasResult) return null;
+
+        return record;
+    }
+
+    function hasUsefulRecord(r) {
+        if (!r) return false;
+        if (r.location === "--") return false;
+        if (r.weather === "--" && r.temp === "--" && r.humidity === "--") return false;
+        if (r.coat === "--" && r.top === "--" && r.bottom === "--" && r.umbrella === "--") return false;
+        return true;
+    }
+
+    function sameQueryKey(r) {
+        return [
+            r.matchedTime,
+            r.weather,
+            r.temp,
+            r.humidity,
+            r.wind,
+            r.apparent,
+            r.rain,
+            r.coat,
+            r.top,
+            r.bottom,
+            r.umbrella
+        ].join("|");
+    }
+
+    function better(a, b) {
+        a = clean(a) || "--";
+        b = clean(b) || "--";
+
+        if (a === "--") return b;
+        if (b === "--") return a;
+
+        return a;
+    }
+
+    function betterLocation(a, b) {
+        a = clean(a) || "--";
+        b = clean(b) || "--";
+
+        if (a === "--") return b;
+        if (b === "--") return a;
+
+        return b.length > a.length ? b : a;
+    }
+
+    function betterDateTime(a, b) {
+        a = fixDateTimeText(a) || "--";
+        b = fixDateTimeText(b) || "--";
+
+        if (a === "--") return b;
+        if (b === "--") return a;
+
+        const aHasTime = /\d{1,2}:\d{2}/.test(a);
+        const bHasTime = /\d{1,2}:\d{2}/.test(b);
+
+        if (aHasTime && !bHasTime) return a;
+        if (bHasTime && !aHasTime) return b;
+
+        return a;
+    }
+
+    function mergeRecord(a, b) {
+        const merged = {
+            dateTime: betterDateTime(a.dateTime, b.dateTime),
+            matchedTime: better(a.matchedTime, b.matchedTime),
+            location: betterLocation(a.location, b.location),
+
+            weather: better(a.weather, b.weather),
+            temp: better(a.temp, b.temp),
+            humidity: better(a.humidity, b.humidity),
+            wind: better(a.wind, b.wind),
+            apparent: better(a.apparent, b.apparent),
+            rain: better(a.rain, b.rain),
+
+            coat: better(a.coat, b.coat),
+            top: better(a.top, b.top),
+            bottom: better(a.bottom, b.bottom),
+            umbrella: better(a.umbrella, b.umbrella)
+        };
+
+        merged.id = [
+            merged.dateTime,
+            merged.location,
+            merged.matchedTime,
+            merged.weather,
+            merged.temp,
+            merged.humidity,
+            merged.wind,
+            merged.apparent,
+            merged.rain,
+            merged.coat,
+            merged.top,
+            merged.bottom,
+            merged.umbrella
+        ].join("|");
+
+        return merged;
+    }
+
+    function getCleanHistory() {
+        const current = buildCurrentRecord();
+        const all = readHistory().map(normalize);
+
+        if (current) {
+            all.unshift(normalize(current));
+        }
+
+        const groups = new Map();
+
+        all.forEach(function (item) {
+            const r = normalize(item);
+            if (!hasUsefulRecord(r)) return;
+
+            const key = sameQueryKey(r);
+
+            if (!groups.has(key)) {
+                groups.set(key, r);
+            } else {
+                groups.set(key, mergeRecord(groups.get(key), r));
+            }
+        });
+
+        const records = Array.from(groups.values());
+
+        saveHistory(records);
+
+        return records;
+    }
+
+    function withUnit(value, unit) {
+        if (!value || value === "--") return "--";
+        const text = String(value);
+        if (text.includes(unit)) return text;
+        return text + unit;
+    }
+
+    function card(r) {
+        return `
+            <article class="history-record-card p-6 md:p-7">
+                <div class="flex justify-between items-start gap-4 mb-5">
+                    <div>
+                        <div class="text-xs text-gray-400 font-bold mb-1">查詢時間</div>
+                        <div class="text-lg font-extrabold text-gray-800 tracking-wide">${r.dateTime}</div>
+                    </div>
+
+                    <div class="bg-[#FFF6C7] text-[#8A6500] text-xs font-bold px-4 py-1.5 rounded-full whitespace-nowrap">
+                        歷史紀錄
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <div class="text-xs text-gray-400 font-bold mb-1">查詢地點</div>
+                    <div class="text-2xl font-extrabold text-gray-800 leading-tight">${r.location}</div>
+                    <div class="text-sm text-gray-400 mt-2">使用預報：${r.matchedTime}</div>
+                </div>
+
+                <div class="history-main-weather rounded-2xl p-5 mb-4 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs text-gray-500 font-bold mb-1">天氣</div>
+                        <div class="text-xl font-extrabold text-[#0A4B5D]">${r.weather}</div>
+                    </div>
+
+                    <div class="text-right">
+                        <div class="text-xs text-gray-500 font-bold mb-1">溫度</div>
+                        <div class="text-2xl font-extrabold text-[#0A4B5D]">${withUnit(r.temp, "°C")}</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-5 text-sm">
+                    <div class="history-mini-stat rounded-xl p-3.5">
+                        <div class="text-xs text-gray-500 font-bold mb-1">濕度</div>
+                        <div class="font-extrabold text-[#0A4B5D]">${withUnit(r.humidity, "%")}</div>
+                    </div>
+
+                    <div class="history-mini-stat rounded-xl p-3.5">
+                        <div class="text-xs text-gray-500 font-bold mb-1">風速</div>
+                        <div class="font-extrabold text-[#0A4B5D]">${withUnit(r.wind, " m/s")}</div>
+                    </div>
+
+                    <div class="history-mini-stat rounded-xl p-3.5">
+                        <div class="text-xs text-gray-500 font-bold mb-1">體感溫度</div>
+                        <div class="font-extrabold text-[#0A4B5D]">${withUnit(r.apparent, "°C")}</div>
+                    </div>
+
+                    <div class="history-mini-stat rounded-xl p-3.5">
+                        <div class="text-xs text-gray-500 font-bold mb-1">降雨機率</div>
+                        <div class="font-extrabold text-[#0A4B5D]">${withUnit(r.rain, "%")}</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-bold">
+                    <span class="history-outfit-chip bg-[#FFF6D8] text-[#7A5A00]">外套：${r.coat}</span>
+                    <span class="history-outfit-chip bg-[#E6F0EA] text-[#3E6B4F]">上衣：${r.top}</span>
+                    <span class="history-outfit-chip bg-[#F5E1D8] text-[#8A4A3A]">下著：${r.bottom}</span>
+                    <span class="history-outfit-chip bg-[#EAF7FF] text-[#2F6F8F]">雨具：${r.umbrella}</span>
+                </div>
+            </article>
+        `;
+    }
+
+    function ensureLoadMoreButton() {
+        const list = document.getElementById("history-record-list");
+        if (!list) return null;
+
+        let wrap = document.getElementById("history-load-more-wrap");
+
+        if (!wrap) {
+            wrap = document.createElement("div");
+            wrap.id = "history-load-more-wrap";
+            wrap.className = "hidden mt-10 flex justify-center";
+            wrap.innerHTML = `
+                <button id="history-load-more-btn" type="button" class="px-10 py-3 rounded-full border border-gray-200 bg-gray-50 text-gray-600 text-sm font-bold">
+                    載入更多
+                    <i class="fa-solid fa-chevron-down ml-2"></i>
+                </button>
+            `;
+            list.insertAdjacentElement("afterend", wrap);
+        }
+
+        return wrap;
+    }
+
+    window.renderHistory = function () {
+        const list = document.getElementById("history-record-list");
+        const input = document.getElementById("history-search-input");
+        if (!list) return;
+
+        const keyword = input ? input.value.trim().toLowerCase() : "";
+
+        let records = getCleanHistory().filter(function (r) {
+            if (!keyword) return true;
+            return JSON.stringify(r).toLowerCase().includes(keyword);
+        });
+
+        const visible = historyShowAll ? records : records.slice(0, 4);
+
+        if (!records.length) {
+            list.innerHTML = `
+                <div class="col-span-full bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
+                    <div class="font-bold text-gray-700 mb-2">目前沒有歷史紀錄</div>
+                    <div class="text-sm text-gray-400">回首頁完成一次查詢後，這裡會顯示氣象預報與穿搭建議。</div>
+                </div>
+            `;
+
+            const wrap = ensureLoadMoreButton();
+            if (wrap) wrap.classList.add("hidden");
+            return;
+        }
+
+        list.innerHTML = visible.map(card).join("");
+
+        const wrap = ensureLoadMoreButton();
+        const btn = document.getElementById("history-load-more-btn");
+
+        if (wrap && btn) {
+            if (records.length > 4 && !historyShowAll) {
+                wrap.classList.remove("hidden");
+                btn.onclick = function () {
+                    historyShowAll = true;
+                    window.renderHistory();
+                };
+            } else {
+                wrap.classList.add("hidden");
+            }
+        }
+    };
+
+    function bindSearch() {
+        const input = document.getElementById("history-search-input");
+
+        if (input && !input.dataset.historyDedupeSingleFinal) {
+            input.dataset.historyDedupeSingleFinal = "true";
+            input.addEventListener("input", function () {
+                historyShowAll = false;
+                window.renderHistory();
+            });
+        }
+    }
+
+    function run() {
+        bindSearch();
+        setTimeout(window.renderHistory, 200);
+        setTimeout(window.renderHistory, 700);
+        setTimeout(window.renderHistory, 1200);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", run);
+    } else {
+        run();
+    }
+
+    const oldSwitchTab = window.switchTab;
+    window.switchTab = function (tabId) {
+        if (typeof oldSwitchTab === "function") {
+            oldSwitchTab(tabId);
+        }
+
+        if (tabId === "history") {
+            bindSearch();
+            setTimeout(window.renderHistory, 100);
+            setTimeout(window.renderHistory, 500);
+            setTimeout(window.renderHistory, 1000);
+        }
+    };
+})();
+</script>
+
+
+<script id="history-compact-card-v3-script">
+(function () {
+    const WEATHER_ICON_BASE = {{ url_for('static', filename='weather_icon/')|tojson }};
+    let historyShowAllCompactV3 = false;
+
+    function clean(v) {
+        const t = String(v ?? "").trim();
+        if (!t || t === "--" || t === "請選擇" || t === "縣市" || t === "鄉鎮市區") return "";
+        return t;
+    }
+
+    function first(obj, keys, fallback = "") {
+        for (const key of keys) {
+            const value = obj && obj[key];
+            if (value !== undefined && value !== null && value !== "") return value;
+        }
+        return fallback;
+    }
+
+    function readHistory() {
+        try {
+            const data = JSON.parse(localStorage.getItem("skystyle_history") || "[]");
+            return Array.isArray(data) ? data : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function normalize(raw) {
+        const r = raw || {};
+        const county = clean(first(r, ["county", "city"], ""));
+        const town = clean(first(r, ["town", "district"], ""));
+
+        return {
+            dateTime: clean(first(r, ["dateTime", "date_time", "created_at"], "")) || "--",
+            matchedTime: clean(first(r, ["matchedTime", "matched_time", "forecast_time"], "")) || "--",
+            location: clean(first(r, ["location", "place"], "")) || (county && town ? county + " " + town : "--"),
+
+            weather: clean(first(r, ["weather"], "")) || "--",
+            temp: clean(first(r, ["temp", "temperature"], "")) || "--",
+            humidity: clean(first(r, ["humidity"], "")) || "--",
+            wind: clean(first(r, ["wind", "wind_speed", "windSpeed"], "")) || "--",
+            apparent: clean(first(r, ["apparent", "apparent_temp", "apparent_temperature"], "")) || "--",
+            rain: clean(first(r, ["rain", "rain_probability", "rain_prob", "PoP"], "")) || "--",
+
+            coat: clean(first(r, ["coat"], "")) || "--",
+            top: clean(first(r, ["top"], "")) || "--",
+            bottom: clean(first(r, ["bottom"], "")) || "--",
+            umbrella: clean(first(r, ["umbrella"], "")) || "--"
+        };
+    }
+
+    function isDisplayable(raw) {
+        const r = normalize(raw);
+        if (r.location === "--") return false;
+        if (r.weather === "--" && r.temp === "--" && r.humidity === "--") return false;
+        if (r.coat === "--" && r.top === "--" && r.bottom === "--" && r.umbrella === "--") return false;
+        return true;
+    }
+
+    function keyOf(raw) {
+        const r = normalize(raw);
+        return [
+            r.dateTime,
+            r.location,
+            r.matchedTime,
+            r.weather,
+            r.temp,
+            r.humidity,
+            r.wind,
+            r.apparent,
+            r.rain,
+            r.coat,
+            r.top,
+            r.bottom,
+            r.umbrella
+        ].join("|");
+    }
+
+    function uniqueRecords(records) {
+        const map = new Map();
+
+        records.forEach(function (item) {
+            const r = normalize(item);
+            const key = keyOf(r);
+            if (!map.has(key)) map.set(key, r);
+        });
+
+        return Array.from(map.values());
+    }
+
+    function withUnit(value, unit) {
+        if (!value || value === "--") return "--";
+        const text = String(value);
+        if (text.includes(unit)) return text;
+        return text + unit;
+    }
+
+    function weatherIconCode(weather) {
+        const text = String(weather || "");
+
+        if (text.includes("雷")) return "15";
+        if (text.includes("雨")) return "08";
+        if (text.includes("陰")) return "07";
+        if (text.includes("多雲")) return "03";
+        if (text.includes("晴")) return "01";
+
+        return "03";
+    }
+
+    function card(raw) {
+        const r = normalize(raw);
+        const iconCode = weatherIconCode(r.weather);
+        const iconSrc = WEATHER_ICON_BASE + iconCode + ".svg";
+
+        return `
+            <article class="history-record-card">
+                <div class="history-card-top">
+                    <div>
+                        <div class="history-small-title">查詢時間</div>
+                        <div class="history-time-value">${r.dateTime}</div>
+                    </div>
+                    <div class="history-badge">歷史紀錄</div>
+                </div>
+
+                <div class="history-place">
+                    <div class="history-small-title">查詢地點</div>
+                    <div class="history-location">${r.location}</div>
+                    <div class="history-forecast">使用預報：${r.matchedTime}</div>
+                </div>
+
+                <div class="history-weather-summary">
+                    <img class="history-weather-icon" src="${iconSrc}" alt="${r.weather}">
+                    <div>
+                        <div class="history-weather-label">天氣</div>
+                        <div class="history-weather-text">${r.weather}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="history-weather-label">溫度</div>
+                        <div class="history-temp-value">${withUnit(r.temp, "°C")}</div>
+                    </div>
+                </div>
+
+                <div class="history-stat-grid">
+                    <div class="history-stat">
+                        <div class="history-stat-label">濕度</div>
+                        <div class="history-stat-value">${withUnit(r.humidity, "%")}</div>
+                    </div>
+
+                    <div class="history-stat">
+                        <div class="history-stat-label">風速</div>
+                        <div class="history-stat-value">${withUnit(r.wind, " m/s")}</div>
+                    </div>
+
+                    <div class="history-stat">
+                        <div class="history-stat-label">體感溫度</div>
+                        <div class="history-stat-value">${withUnit(r.apparent, "°C")}</div>
+                    </div>
+
+                    <div class="history-stat">
+                        <div class="history-stat-label">降雨機率</div>
+                        <div class="history-stat-value">${withUnit(r.rain, "%")}</div>
+                    </div>
+                </div>
+
+                <div class="history-outfit-grid">
+                    <span class="history-outfit-chip bg-[#FFF6D8] text-[#7A5A00]">外套：${r.coat}</span>
+                    <span class="history-outfit-chip bg-[#E6F0EA] text-[#3E6B4F]">上衣：${r.top}</span>
+                    <span class="history-outfit-chip bg-[#F5E1D8] text-[#8A4A3A]">下著：${r.bottom}</span>
+                    <span class="history-outfit-chip bg-[#EAF7FF] text-[#2F6F8F]">雨具：${r.umbrella}</span>
+                </div>
+            </article>
+        `;
+    }
+
+    function ensureLoadMoreButton() {
+        const list = document.getElementById("history-record-list");
+        if (!list) return null;
+
+        let wrap = document.getElementById("history-load-more-wrap");
+
+        if (!wrap) {
+            wrap = document.createElement("div");
+            wrap.id = "history-load-more-wrap";
+            wrap.className = "hidden mt-10 flex justify-center";
+            wrap.innerHTML = `
+                <button id="history-load-more-btn" type="button" class="px-10 py-3 rounded-full border border-gray-200 bg-gray-50 text-gray-600 text-sm font-bold">
+                    載入更多
+                    <i class="fa-solid fa-chevron-down ml-2"></i>
+                </button>
+            `;
+            list.insertAdjacentElement("afterend", wrap);
+        }
+
+        return wrap;
+    }
+
+    window.renderHistory = function () {
+        const list = document.getElementById("history-record-list");
+        const input = document.getElementById("history-search-input");
+        if (!list) return;
+
+        const keyword = input ? input.value.trim().toLowerCase() : "";
+
+        let records = uniqueRecords(readHistory().filter(isDisplayable))
+            .filter(function (r) {
+                if (!keyword) return true;
+                return JSON.stringify(r).toLowerCase().includes(keyword);
+            });
+
+        const visible = historyShowAllCompactV3 ? records : records.slice(0, 4);
+
+        if (!records.length) {
+            list.innerHTML = `
+                <div class="col-span-full bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
+                    <div class="font-bold text-gray-700 mb-2">目前沒有歷史紀錄</div>
+                    <div class="text-sm text-gray-400">回首頁完成一次查詢後，這裡會顯示氣象預報與穿搭建議。</div>
+                </div>
+            `;
+
+            const wrap = ensureLoadMoreButton();
+            if (wrap) wrap.classList.add("hidden");
+            return;
+        }
+
+        list.innerHTML = visible.map(card).join("");
+
+        const wrap = ensureLoadMoreButton();
+        const btn = document.getElementById("history-load-more-btn");
+
+        if (wrap && btn) {
+            if (records.length > 4 && !historyShowAllCompactV3) {
+                wrap.classList.remove("hidden");
+                btn.onclick = function () {
+                    historyShowAllCompactV3 = true;
+                    window.renderHistory();
+                };
+            } else {
+                wrap.classList.add("hidden");
+            }
+        }
+    };
+
+    function bindSearch() {
+        const input = document.getElementById("history-search-input");
+
+        if (input && !input.dataset.historyCompactCardV3) {
+            input.dataset.historyCompactCardV3 = "true";
+            input.addEventListener("input", function () {
+                historyShowAllCompactV3 = false;
+                window.renderHistory();
+            });
+        }
+    }
+
+    function run() {
+        bindSearch();
+        setTimeout(window.renderHistory, 150);
+        setTimeout(window.renderHistory, 600);
+        setTimeout(window.renderHistory, 1000);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", run);
+    } else {
+        run();
+    }
+
+    const oldSwitchTab = window.switchTab;
+    window.switchTab = function (tabId) {
+        if (typeof oldSwitchTab === "function") oldSwitchTab(tabId);
+
+        if (tabId === "history") {
+            bindSearch();
+            setTimeout(window.renderHistory, 80);
+            setTimeout(window.renderHistory, 400);
+            setTimeout(window.renderHistory, 900);
+        }
+    };
+})();
+</script>
+
+
+<script id="history-time-only-patch">
+(function () {
+    const SERVER = {
+        result: {{ result|default({}, true)|tojson }},
+        form_date: {{ form_date|default('', true)|tojson }},
+        form_hour: {{ form_hour|default('', true)|tojson }},
+        form_minute: {{ form_minute|default('', true)|tojson }},
+        date: {{ date|default('', true)|tojson }}
+    };
+
+    function clean(v) {
+        const t = String(v ?? "").trim();
+        if (!t || t === "--" || t === "請選擇") return "";
+        return t;
+    }
+
+    function two(v) {
+        const n = String(v ?? "").replace(/[^\d]/g, "");
+        if (!n) return "";
+        return n.padStart(2, "0");
+    }
+
+    function getValue(id) {
+        const el = document.getElementById(id);
+        if (!el) return "";
+
+        if (el.tagName && el.tagName.toLowerCase() === "select") {
+            const option = el.options && el.options[el.selectedIndex];
+            const value = clean(el.value);
+            const text = clean(option ? option.textContent : "");
+            return value || text.replace(/[^\d]/g, "");
+        }
+
+        return clean(el.value);
+    }
+
+    function formatDate(v) {
+        const t = clean(v);
+        if (!t) return "";
+        return t.replaceAll("-", "/");
+    }
+
+    function selectedDateTime() {
+        const d =
+            formatDate(SERVER.form_date) ||
+            formatDate(SERVER.date) ||
+            formatDate(getValue("dateInput"));
+
+        const h =
+            two(SERVER.form_hour) ||
+            two(getValue("hourSelect"));
+
+        const m =
+            two(SERVER.form_minute) ||
+            two(getValue("minuteSelect"));
+
+        if (d && h && m) return d + " " + h + ":" + m;
+        if (d) return d;
+        return "";
+    }
+
+    function matchedTime() {
+        const r = SERVER.result || {};
+        return clean(r.matched_time || r.forecast_time || r.time_text || "");
+    }
+
+    function readHistory() {
+        try {
+            const data = JSON.parse(localStorage.getItem("skystyle_history") || "[]");
+            return Array.isArray(data) ? data : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveHistory(records) {
+        localStorage.setItem("skystyle_history", JSON.stringify(records.slice(0, 80)));
+    }
+
+    function patchStorageTime() {
+        const dt = selectedDateTime();
+        const mt = matchedTime();
+
+        if (!dt) return false;
+
+        const records = readHistory();
+        let changed = false;
+
+        records.forEach(function (r) {
+            if (!r) return;
+
+            const rMatched =
+                clean(r.matchedTime) === mt ||
+                clean(r.matched_time) === mt ||
+                clean(r.forecast_time) === mt;
+
+            const currentDateOnly = dt.split(" ")[0];
+            const rDateTime = clean(r.dateTime || r.date_time || "");
+            const rDateOnly = rDateTime.split(" ")[0];
+
+            const sameDate =
+                rDateOnly === currentDateOnly ||
+                rDateTime === currentDateOnly;
+
+            // 只修目前這次查詢相關資料，不刪其他歷史紀錄
+            if (rMatched || sameDate) {
+                r.dateTime = dt;
+                r.date_time = dt;
+                r.hour = two(SERVER.form_hour) || two(getValue("hourSelect"));
+                r.minute = two(SERVER.form_minute) || two(getValue("minuteSelect"));
+
+                if (mt) {
+                    r.matchedTime = mt;
+                    r.matched_time = mt;
+                }
+
+                changed = true;
+            }
+        });
+
+        if (changed) {
+            saveHistory(records);
+        }
+
+        return changed;
+    }
+
+    function patchVisibleCards() {
+        const dt = selectedDateTime();
+        const mt = matchedTime();
+
+        if (!dt) return;
+
+        const cards = document.querySelectorAll(".history-record-card");
+
+        cards.forEach(function (card) {
+            const text = card.innerText || "";
+
+            const related =
+                !mt ||
+                text.includes(mt) ||
+                text.includes(dt.split(" ")[0]);
+
+            if (!related) return;
+
+            const divs = Array.from(card.querySelectorAll("div"));
+            const label = divs.find(function (el) {
+                return clean(el.textContent) === "查詢時間";
+            });
+
+            if (label && label.nextElementSibling) {
+                label.nextElementSibling.textContent = dt;
+            }
+        });
+    }
+
+    function runPatch() {
+        patchStorageTime();
+        patchVisibleCards();
+    }
+
+    const oldRenderHistory = window.renderHistory;
+
+    window.renderHistory = function () {
+        patchStorageTime();
+
+        if (typeof oldRenderHistory === "function") {
+            oldRenderHistory();
+        }
+
+        setTimeout(runPatch, 50);
+        setTimeout(runPatch, 200);
+    };
+
+    function init() {
+        setTimeout(runPatch, 100);
+        setTimeout(runPatch, 400);
+        setTimeout(function () {
+            if (typeof window.renderHistory === "function") {
+                window.renderHistory();
+            }
+        }, 700);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
+
+    const oldSwitchTab = window.switchTab;
+
+    window.switchTab = function (tabId) {
+        if (typeof oldSwitchTab === "function") {
+            oldSwitchTab(tabId);
+        }
+
+        if (tabId === "history") {
+            setTimeout(runPatch, 80);
+            setTimeout(runPatch, 300);
+            setTimeout(function () {
+                if (typeof window.renderHistory === "function") {
+                    window.renderHistory();
+                }
+            }, 500);
+        }
+    };
 })();
 </script>
 
