@@ -5312,6 +5312,322 @@ function run() {
     });
 })();
 </script>
+
+            <script id="sticky-language-temperature-final-patch">
+(function () {
+    const TEXT = {
+        "繁體中文": {
+            appTitle: "智慧氣象穿搭指南",
+            navHome: "首頁",
+            navHistory: "歷史紀錄",
+            navSettings: "設定",
+            homeTitle: "依據天氣狀況規劃穿搭",
+            homeDesc: "輸入日期、時間和地點後，系統將提供氣象預報與穿搭建議。",
+            getBtn: "獲取穿搭建議",
+            queryLocation: "查詢位置",
+            resultTitle: "穿搭建議結果",
+            resultBadge: "天氣預測結果",
+            historyTitle: "歷史紀錄",
+            historyDesc: "回顧您過去查詢的氣象預報與穿搭建議。",
+            searchPlaceholder: "輸入日期、時間或地點查詢",
+            all: "全部",
+            month: "本月",
+            week: "本週",
+            queryTime: "查詢時間",
+            queryPlace: "查詢地點",
+            historyBadge: "歷史紀錄",
+            forecast: "使用預報",
+            weather: "天氣",
+            temp: "溫度",
+            humidity: "濕度",
+            wind: "風速",
+            apparent: "體感溫度",
+            rain: "降雨機率",
+            coat: "外套",
+            top: "上衣",
+            bottom: "下著",
+            umbrella: "雨具"
+        },
+        "簡體中文": {
+            appTitle: "智慧气象穿搭指南",
+            navHome: "首页",
+            navHistory: "历史记录",
+            navSettings: "设置",
+            homeTitle: "依据天气状况规划穿搭",
+            homeDesc: "输入日期、时间和地点后，系统将提供气象预报与穿搭建议。",
+            getBtn: "获取穿搭建议",
+            queryLocation: "查询位置",
+            resultTitle: "穿搭建议结果",
+            resultBadge: "天气预测结果",
+            historyTitle: "历史记录",
+            historyDesc: "回顾您过去查询的气象预报与穿搭建议。",
+            searchPlaceholder: "输入日期、时间或地点查询",
+            all: "全部",
+            month: "本月",
+            week: "本周",
+            queryTime: "查询时间",
+            queryPlace: "查询地点",
+            historyBadge: "历史记录",
+            forecast: "使用预报",
+            weather: "天气",
+            temp: "温度",
+            humidity: "湿度",
+            wind: "风速",
+            apparent: "体感温度",
+            rain: "降雨概率",
+            coat: "外套",
+            top: "上衣",
+            bottom: "下装",
+            umbrella: "雨具"
+        },
+        "English": {
+            appTitle: "Smart Weather Outfit Guide",
+            navHome: "Home",
+            navHistory: "History",
+            navSettings: "Settings",
+            homeTitle: "Plan outfits based on weather",
+            homeDesc: "Enter a date, time, and location to get weather forecasts and outfit suggestions.",
+            getBtn: "Get Outfit Suggestions",
+            queryLocation: "Location",
+            resultTitle: "Outfit Suggestions",
+            resultBadge: "Weather Forecast",
+            historyTitle: "History",
+            historyDesc: "Review your past weather forecasts and outfit suggestions.",
+            searchPlaceholder: "Search by date, time, or location",
+            all: "All",
+            month: "This Month",
+            week: "This Week",
+            queryTime: "Query Time",
+            queryPlace: "Location",
+            historyBadge: "History",
+            forecast: "Forecast",
+            weather: "Weather",
+            temp: "Temperature",
+            humidity: "Humidity",
+            wind: "Wind Speed",
+            apparent: "Feels Like",
+            rain: "Rain Chance",
+            coat: "Jacket",
+            top: "Top",
+            bottom: "Bottom",
+            umbrella: "Rain Gear"
+        }
+    };
+
+    let isApplying = false;
+    let timer = null;
+
+    function lang() {
+        return localStorage.getItem("skystyle_language") || "繁體中文";
+    }
+
+    function unit() {
+        return localStorage.getItem("skystyle_temperature_unit") || "C";
+    }
+
+    function dict() {
+        return TEXT[lang()] || TEXT["繁體中文"];
+    }
+
+    function setText(el, text) {
+        if (el && text && el.textContent !== text) {
+            el.textContent = text;
+        }
+    }
+
+    function applyLanguage() {
+        const t = dict();
+
+        setText(document.querySelector("header > div:first-child"), t.appTitle);
+        setText(document.getElementById("nav-home"), t.navHome);
+        setText(document.getElementById("nav-history"), t.navHistory);
+        setText(document.getElementById("nav-settings"), t.navSettings);
+
+        setText(document.querySelector("#home-view h1"), t.homeTitle);
+        setText(document.querySelector("#home-view h1 + p"), t.homeDesc);
+
+        const submitBtn = document.querySelector("#home-view form button[type='submit']");
+        if (submitBtn) {
+            submitBtn.innerHTML = t.getBtn + ' <i class="fa-solid fa-arrow-right ml-1"></i>';
+        }
+
+        const resultTitle = document.querySelector("#home-view section.mt-10 h2");
+        setText(resultTitle, t.resultTitle);
+
+        document.querySelectorAll("[data-i18n='result-badge']").forEach(function (el) {
+            setText(el, t.resultBadge);
+        });
+
+        document.querySelectorAll("#overlayLocation").forEach(function (el) {
+            const label = el.parentElement ? el.parentElement.querySelector(".text-xs") : null;
+            setText(label, t.queryLocation);
+        });
+
+        setText(document.querySelector("#history-view h1"), t.historyTitle);
+        setText(document.querySelector("#history-view h1 + p"), t.historyDesc);
+
+        const search = document.getElementById("history-search-input");
+        if (search) search.placeholder = t.searchPlaceholder;
+
+        document.querySelectorAll(".history-filter-btn").forEach(function (btn) {
+            const f = btn.dataset.filter;
+            if (f === "all") setText(btn, t.all);
+            if (f === "month") setText(btn, t.month);
+            if (f === "week") setText(btn, t.week);
+        });
+
+        document.querySelectorAll(".history-badge").forEach(function (el) {
+            setText(el, t.historyBadge);
+        });
+
+        document.querySelectorAll(".history-small-title, .history-weather-label, .history-stat-label").forEach(function (el) {
+            const raw = (el.dataset.labelKey || el.textContent || "").trim();
+
+            if (!el.dataset.labelKey) {
+                if (/查詢時間|查询时间|Query Time/i.test(raw)) el.dataset.labelKey = "queryTime";
+                else if (/查詢地點|查询地点|Location/i.test(raw)) el.dataset.labelKey = "queryPlace";
+                else if (/天氣|天气|Weather/i.test(raw)) el.dataset.labelKey = "weather";
+                else if (/溫度|温度|Temperature/i.test(raw)) el.dataset.labelKey = "temp";
+                else if (/濕度|湿度|Humidity/i.test(raw)) el.dataset.labelKey = "humidity";
+                else if (/風速|风速|Wind Speed/i.test(raw)) el.dataset.labelKey = "wind";
+                else if (/體感溫度|体感温度|Feels Like/i.test(raw)) el.dataset.labelKey = "apparent";
+                else if (/降雨機率|降雨概率|Rain Chance/i.test(raw)) el.dataset.labelKey = "rain";
+            }
+
+            const key = el.dataset.labelKey;
+            if (key && t[key]) setText(el, t[key]);
+        });
+
+        document.querySelectorAll(".history-forecast").forEach(function (el) {
+            const value = (el.textContent || "").replace(/^(使用預報|使用预报|Forecast)\s*[：:]?\s*/i, "");
+            el.textContent = t.forecast + "：" + value;
+        });
+
+        document.querySelectorAll(".history-outfit-chip").forEach(function (el) {
+            const old = el.textContent || "";
+            let key = "";
+
+            if (/^(外套|Jacket)/i.test(old)) key = "coat";
+            else if (/^(上衣|Top)/i.test(old)) key = "top";
+            else if (/^(下著|下装|Bottom)/i.test(old)) key = "bottom";
+            else if (/^(雨具|Rain Gear)/i.test(old)) key = "umbrella";
+
+            if (!key) return;
+
+            const value = old.replace(/^.*?[：:]\s*/, "");
+            el.textContent = t[key] + "：" + value;
+        });
+    }
+
+    function parseTemp(text) {
+        const m = String(text || "").trim().match(/^(-?\d+(?:\.\d+)?)\s*°([CF])$/);
+        if (!m) return null;
+
+        return {
+            value: parseFloat(m[1]),
+            unit: m[2]
+        };
+    }
+
+    function convertTemperatureElement(el) {
+        const parsed = parseTemp(el.textContent);
+        const target = unit();
+
+        if (parsed) {
+            let celsius = parsed.value;
+
+            if (parsed.unit === "F") {
+                celsius = (parsed.value - 32) * 5 / 9;
+            }
+
+            el.dataset.celsiusBaseFinal = String(celsius);
+        }
+
+        const base = parseFloat(el.dataset.celsiusBaseFinal);
+        if (Number.isNaN(base)) return;
+
+        if (target === "F") {
+            const f = Math.round(base * 9 / 5 + 32);
+            const next = f + "°F";
+            if (el.textContent !== next) el.textContent = next;
+        } else {
+            const c = Math.round(base);
+            const next = c + "°C";
+            if (el.textContent !== next) el.textContent = next;
+        }
+    }
+
+    function applyTemperature() {
+        document.querySelectorAll("body *").forEach(function (el) {
+            const tag = el.tagName ? el.tagName.toLowerCase() : "";
+            if (["script", "style", "input", "select", "option", "textarea"].includes(tag)) return;
+            if (el.children.length > 0) return;
+
+            if (parseTemp(el.textContent) || el.dataset.celsiusBaseFinal) {
+                convertTemperatureElement(el);
+            }
+        });
+    }
+
+    function applyAll() {
+        if (isApplying) return;
+        isApplying = true;
+
+        applyLanguage();
+        applyTemperature();
+
+        isApplying = false;
+    }
+
+    function scheduleApply() {
+        clearTimeout(timer);
+        timer = setTimeout(applyAll, 80);
+    }
+
+    const observer = new MutationObserver(function () {
+        scheduleApply();
+    });
+
+    function start() {
+        applyAll();
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+
+        setTimeout(applyAll, 300);
+        setTimeout(applyAll, 800);
+        setTimeout(applyAll, 1500);
+        setTimeout(applyAll, 2500);
+    }
+
+    document.addEventListener("change", function () {
+        setTimeout(applyAll, 50);
+        setTimeout(applyAll, 300);
+        setTimeout(applyAll, 800);
+    });
+
+    document.addEventListener("click", function () {
+        setTimeout(applyAll, 50);
+        setTimeout(applyAll, 300);
+        setTimeout(applyAll, 800);
+    });
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start);
+    } else {
+        start();
+    }
+
+    window.addEventListener("load", function () {
+        setTimeout(applyAll, 100);
+        setTimeout(applyAll, 700);
+        setTimeout(applyAll, 1600);
+    });
+})();
+</script>
             
 </body>
 </html>
