@@ -4729,5 +4729,130 @@ function run() {
 })();
 </script>
 
+            <script id="town-select-safe-fix">
+(function () {
+    const TOWN_MAP_SAFE = {{ TOWN_MAP | default({}) | tojson }};
+    const SAVED_TOWN_SAFE = {{ form_town | default('', true) | tojson }};
+
+    function clean(text) {
+        return String(text || "").trim();
+    }
+
+    function normalizeName(text) {
+        return clean(text).replaceAll("台", "臺");
+    }
+
+    function getTownList(county) {
+        if (!county) return [];
+
+        if (Array.isArray(TOWN_MAP_SAFE[county])) {
+            return TOWN_MAP_SAFE[county];
+        }
+
+        const normalizedCounty = normalizeName(county);
+
+        if (Array.isArray(TOWN_MAP_SAFE[normalizedCounty])) {
+            return TOWN_MAP_SAFE[normalizedCounty];
+        }
+
+        const matchedKey = Object.keys(TOWN_MAP_SAFE).find(function (key) {
+            return normalizeName(key) === normalizedCounty;
+        });
+
+        if (matchedKey && Array.isArray(TOWN_MAP_SAFE[matchedKey])) {
+            return TOWN_MAP_SAFE[matchedKey];
+        }
+
+        return [];
+    }
+
+    function fillTownSelect() {
+        const countySelect = document.getElementById("countySelect");
+        const townSelect = document.getElementById("townSelect");
+        const overlayLocation = document.getElementById("overlayLocation");
+
+        if (!countySelect || !townSelect) return;
+
+        const county = countySelect.value;
+        const towns = getTownList(county);
+
+        townSelect.innerHTML = "";
+
+        if (!towns.length) {
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "找不到鄉鎮市區";
+            townSelect.appendChild(option);
+
+            if (overlayLocation) {
+                overlayLocation.textContent = county + " / 找不到鄉鎮市區";
+            }
+
+            return;
+        }
+
+        towns.forEach(function (town) {
+            const option = document.createElement("option");
+            option.value = town;
+            option.textContent = town;
+
+            if (town === SAVED_TOWN_SAFE) {
+                option.selected = true;
+            }
+
+            townSelect.appendChild(option);
+        });
+
+        if (!townSelect.value && townSelect.options.length > 0) {
+            townSelect.selectedIndex = 0;
+        }
+
+        if (overlayLocation) {
+            overlayLocation.textContent = county + " / " + townSelect.value;
+        }
+    }
+
+    function bindTownSelectFix() {
+        const countySelect = document.getElementById("countySelect");
+        const townSelect = document.getElementById("townSelect");
+
+        if (!countySelect || !townSelect) return;
+
+        fillTownSelect();
+
+        if (!countySelect.dataset.townSafeFixBound) {
+            countySelect.dataset.townSafeFixBound = "true";
+
+            countySelect.addEventListener("change", function () {
+                fillTownSelect();
+            });
+        }
+
+        if (!townSelect.dataset.townSafeFixBound) {
+            townSelect.dataset.townSafeFixBound = "true";
+
+            townSelect.addEventListener("change", function () {
+                const overlayLocation = document.getElementById("overlayLocation");
+
+                if (overlayLocation) {
+                    overlayLocation.textContent = countySelect.value + " / " + townSelect.value;
+                }
+            });
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", bindTownSelectFix);
+    } else {
+        bindTownSelectFix();
+    }
+
+    window.addEventListener("load", function () {
+        setTimeout(bindTownSelectFix, 100);
+        setTimeout(bindTownSelectFix, 500);
+    });
+})();
+</script>
+
 </body>
 </html>
