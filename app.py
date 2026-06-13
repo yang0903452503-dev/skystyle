@@ -1020,7 +1020,7 @@ def home():
             target_time = datetime.fromisoformat(form_date + "T" + form_time).replace(tzinfo=TZ)
 
             if target_time < now:
-                error = "只能選擇現在之後的時間"
+                error = "只能選擇未來 24 小時內的時間"
                 return render_template("main.html", **locals())
 
             if target_time > now + timedelta(hours=24):
