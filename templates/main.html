@@ -4854,5 +4854,147 @@ function run() {
 })();
 </script>
 
+            <script id="history-keep-time-only-patch">
+(function () {
+    const STORAGE_KEY = "skystyle_history";
+
+    function clean(v) {
+        const t = String(v ?? "").trim();
+        if (!t || t === "--") return "";
+        return t;
+    }
+
+    function first(obj, keys) {
+        for (const key of keys) {
+            if (obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") {
+                return obj[key];
+            }
+        }
+        return "";
+    }
+
+    function hasClockTime(record) {
+        const t =
+            first(record, ["queryTime", "query_time"]) ||
+            first(record, ["dateTime", "date_time", "created_at", "createdAt"]) ||
+            "";
+
+        return /\d{1,2}:\d{2}/.test(String(t));
+    }
+
+    function resultKey(record) {
+        const r = record || {};
+
+        const county = clean(first(r, ["county", "city"]));
+        const town = clean(first(r, ["town", "district"]));
+
+        const location =
+            clean(first(r, ["location", "place"])) ||
+            (county && town ? county + " " + town : "");
+
+        return [
+            location,
+            clean(first(r, ["matchedTime", "matched_time", "forecast_time"])),
+            clean(first(r, ["weather"])),
+            clean(first(r, ["temp", "temperature"])),
+            clean(first(r, ["humidity"])),
+            clean(first(r, ["wind", "wind_speed", "windSpeed"])),
+            clean(first(r, ["apparent", "apparent_temp", "apparent_temperature"])),
+            clean(first(r, ["rain", "rain_prob", "rain_probability", "rainProbability", "PoP"])),
+            clean(first(r, ["coat"])),
+            clean(first(r, ["top"])),
+            clean(first(r, ["bottom"])),
+            clean(first(r, ["umbrella"]))
+        ].join("|");
+    }
+
+    function readHistory() {
+        try {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            return Array.isArray(data) ? data : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveHistory(records) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records.slice(0, 80)));
+    }
+
+    function keepTimedVersionOnly() {
+        const records = readHistory();
+
+        const timedKeys = new Set();
+
+        records.forEach(function (record) {
+            if (hasClockTime(record)) {
+                timedKeys.add(resultKey(record));
+            }
+        });
+
+        const seen = new Set();
+
+        const cleaned = records.filter(function (record) {
+            const key = resultKey(record);
+            const timed = hasClockTime(record);
+
+            if (!timed && timedKeys.has(key)) {
+                return false;
+            }
+
+            const exactKey = (timed ? "time|" : "date|") + key + "|" + JSON.stringify(record);
+            if (seen.has(exactKey)) {
+                return false;
+            }
+
+            seen.add(exactKey);
+            return true;
+        });
+
+        saveHistory(cleaned);
+    }
+
+    const oldRenderHistory = window.renderHistory;
+
+    window.renderHistory = function () {
+        keepTimedVersionOnly();
+
+        if (typeof oldRenderHistory === "function") {
+            oldRenderHistory();
+        }
+
+        setTimeout(keepTimedVersionOnly, 100);
+    };
+
+    function runPatch() {
+        keepTimedVersionOnly();
+
+        if (typeof oldRenderHistory === "function") {
+            oldRenderHistory();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(runPatch, 500);
+        setTimeout(runPatch, 1200);
+        setTimeout(runPatch, 2200);
+    });
+
+    const oldSwitchTab = window.switchTab;
+
+    window.switchTab = function (tabId) {
+        if (typeof oldSwitchTab === "function") {
+            oldSwitchTab(tabId);
+        }
+
+        if (tabId === "history") {
+            setTimeout(runPatch, 500);
+            setTimeout(runPatch, 1200);
+            setTimeout(runPatch, 2200);
+        }
+    };
+})();
+</script>
+            
 </body>
 </html>
