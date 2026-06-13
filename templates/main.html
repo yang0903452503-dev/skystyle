@@ -4694,14 +4694,18 @@ const translations = {
         });
     }
 
-    function run() {
-        setupHistoryPage();
-        storeCurrentRecord();
-        bindHistoryControls();
+function run() {
+    const SHOULD_SAVE_HISTORY = {{ 'true' if request.method == 'POST' and result else 'false' }};
 
-        setTimeout(window.renderHistory, 100);
-        setTimeout(window.renderHistory, 500);
+    if (SHOULD_SAVE_HISTORY) {
+        storeCurrentRecord();
     }
+
+    bindHistoryControls();
+
+    setTimeout(window.renderHistory, 100);
+    setTimeout(window.renderHistory, 500);
+}
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", run);
