@@ -4045,29 +4045,47 @@ const translations = {
 </script>
 
 
-<script id="history-time-only-patch">
+<script id="history-query-time-final-fix">
 (function () {
+    const STORAGE_KEY = "skystyle_history";
+    const WEATHER_ICON_BASE = {{ url_for('static', filename='weather_icon/')|tojson }};
+
     const SERVER = {
         result: {{ result|default({}, true)|tojson }},
         form_date: {{ form_date|default('', true)|tojson }},
         form_hour: {{ form_hour|default('', true)|tojson }},
         form_minute: {{ form_minute|default('', true)|tojson }},
-        date: {{ date|default('', true)|tojson }}
+        date: {{ date|default('', true)|tojson }},
+        county: {{ county|default('', true)|tojson }},
+        town: {{ town|default('', true)|tojson }},
+        form_county: {{ form_county|default('', true)|tojson }},
+        form_town: {{ form_town|default('', true)|tojson }}
     };
+
+    let historyShowAll = false;
+    let currentHistoryFilter = "all";
 
     function clean(v) {
         const t = String(v ?? "").trim();
-        if (!t || t === "--" || t === "請選擇") return "";
+        if (!t || t === "--" || t === "請選擇" || t === "縣市" || t === "鄉鎮市區") return "";
         return t;
+    }
+
+    function first(obj, keys, fallback = "") {
+        for (const key of keys) {
+            const value = obj && obj[key];
+            if (value !== undefined && value !== null && value !== "") return value;
+        }
+        return fallback;
     }
 
     function two(v) {
         const n = String(v ?? "").replace(/[^\d]/g, "");
         if (!n) return "";
-        return n.padStart(2, "0");
+        return n.padStart(2, "0").slice(-2);
     }
 
-    function getValue(id) {
+    function getInputValue(id) {
         const el = document.getElementById(id);
         if (!el) return "";
 
@@ -4087,33 +4105,68 @@ const translations = {
         return t.replaceAll("-", "/");
     }
 
-    function selectedDateTime() {
+    function fixDateTimeText(v) {
+        let t = clean(v);
+        if (!t) return "";
+
+        t = t.replaceAll("-", "/");
+
+        const m = t.match(/^(\d{4}\/\d{1,2}\/\d{1,2})\s+(\d{1,2}):(\d{1,2})$/);
+        if (m) {
+            return m[1] + " " + two(m[2]) + ":" + two(m[3]);
+        }
+
+        return t;
+    }
+
+    function getQueryTimeFromForm() {
         const d =
             formatDate(SERVER.form_date) ||
             formatDate(SERVER.date) ||
-            formatDate(getValue("dateInput"));
+            formatDate(getInputValue("dateInput"));
 
         const h =
             two(SERVER.form_hour) ||
-            two(getValue("hourSelect"));
+            two(getInputValue("hourSelect"));
 
         const m =
             two(SERVER.form_minute) ||
-            two(getValue("minuteSelect"));
+            two(getInputValue("minuteSelect"));
 
         if (d && h && m) return d + " " + h + ":" + m;
         if (d) return d;
         return "";
     }
 
-    function matchedTime() {
-        const r = SERVER.result || {};
-        return clean(r.matched_time || r.forecast_time || r.time_text || "");
+    function getCurrentLocation() {
+        const county =
+            clean(SERVER.form_county) ||
+            clean(SERVER.county) ||
+            clean(getInputValue("countySelect"));
+
+        const town =
+            clean(SERVER.form_town) ||
+            clean(SERVER.town) ||
+            clean(getInputValue("townSelect"));
+
+        if (county && town) return county + " " + town;
+        return county || town || "";
+    }
+
+    function splitClothing(text) {
+        const t = clean(text);
+        if (!t) return ["", ""];
+
+        const parts = t.split("+");
+        return [
+            clean(parts[0] || ""),
+            clean(parts[1] || "")
+        ];
     }
 
     function readHistory() {
         try {
-            const data = JSON.parse(localStorage.getItem("skystyle_history") || "[]");
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
             return Array.isArray(data) ? data : [];
         } catch (e) {
             return [];
@@ -4121,135 +4174,453 @@ const translations = {
     }
 
     function saveHistory(records) {
-        localStorage.setItem("skystyle_history", JSON.stringify(records.slice(0, 80)));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records.slice(0, 80)));
     }
 
-    function patchStorageTime() {
-        const dt = selectedDateTime();
-        const mt = matchedTime();
+    function buildCurrentRecord() {
+        const r = SERVER.result || {};
+        const queryTime = getQueryTimeFromForm();
+        const location = getCurrentLocation();
+        const matchedTime = clean(first(r, ["matched_time", "matchedTime", "forecast_time", "time_text"], ""));
 
-        if (!dt) return false;
+        const clothing = first(r, ["clothing"], "");
+        const clothingParts = splitClothing(clothing);
 
-        const records = readHistory();
-        let changed = false;
+        const record = {
+            queryTime: queryTime || "--",
+            dateTime: queryTime || "--",
+            date_time: queryTime || "--",
 
-        records.forEach(function (r) {
-            if (!r) return;
+            matchedTime: matchedTime || "--",
+            matched_time: matchedTime || "--",
 
-            const rMatched =
-                clean(r.matchedTime) === mt ||
-                clean(r.matched_time) === mt ||
-                clean(r.forecast_time) === mt;
+            location: location || "--",
+            county: clean(SERVER.form_county) || clean(SERVER.county),
+            town: clean(SERVER.form_town) || clean(SERVER.town),
 
-            const currentDateOnly = dt.split(" ")[0];
-            const rDateTime = clean(r.dateTime || r.date_time || "");
-            const rDateOnly = rDateTime.split(" ")[0];
+            weather: clean(first(r, ["weather"], "")) || "--",
+            weatherIcon: clean(first(r, ["weather_icon", "weatherIcon"], "")),
+            temp: clean(first(r, ["temp", "temperature"], "")) || "--",
+            humidity: clean(first(r, ["humidity"], "")) || "--",
+            wind: clean(first(r, ["wind", "wind_speed", "windSpeed"], "")) || "--",
+            wind_speed: clean(first(r, ["wind_speed", "windSpeed"], "")) || "--",
+            apparent: clean(first(r, ["apparent", "apparent_temp", "apparent_temperature"], "")) || "--",
+            apparent_temp: clean(first(r, ["apparent_temp", "apparent_temperature"], "")) || "--",
+            rain: clean(first(r, ["rain", "rain_prob", "rain_probability", "rainProbability", "PoP"], "")) || "--",
+            rain_prob: clean(first(r, ["rain_prob", "rain_probability", "rainProbability", "PoP"], "")) || "--",
 
-            const sameDate =
-                rDateOnly === currentDateOnly ||
-                rDateTime === currentDateOnly;
+            coat: clean(first(r, ["coat"], "")) || "--",
+            top: clean(first(r, ["top"], "")) || clothingParts[0] || "--",
+            bottom: clean(first(r, ["bottom"], "")) || clothingParts[1] || "--",
+            umbrella: clean(first(r, ["umbrella"], "")) || "--"
+        };
 
-            // 只修目前這次查詢相關資料，不刪其他歷史紀錄
-            if (rMatched || sameDate) {
-                r.dateTime = dt;
-                r.date_time = dt;
-                r.hour = two(SERVER.form_hour) || two(getValue("hourSelect"));
-                r.minute = two(SERVER.form_minute) || two(getValue("minuteSelect"));
+        const hasResult =
+            record.weather !== "--" ||
+            record.temp !== "--" ||
+            record.humidity !== "--" ||
+            record.coat !== "--" ||
+            record.top !== "--" ||
+            record.bottom !== "--" ||
+            record.umbrella !== "--";
 
-                if (mt) {
-                    r.matchedTime = mt;
-                    r.matched_time = mt;
-                }
+        if (!hasResult) return null;
 
-                changed = true;
+        record.id = [
+            record.queryTime,
+            record.location,
+            record.matchedTime,
+            record.weather,
+            record.temp,
+            record.humidity,
+            record.wind,
+            record.apparent,
+            record.rain,
+            record.coat,
+            record.top,
+            record.bottom,
+            record.umbrella
+        ].join("|");
+
+        return record;
+    }
+
+    function normalize(raw) {
+        const r = raw || {};
+        const county = clean(first(r, ["county", "city"], ""));
+        const town = clean(first(r, ["town", "district"], ""));
+        const clothingParts = splitClothing(first(r, ["clothing"], ""));
+
+        const queryTime =
+            fixDateTimeText(first(r, ["queryTime", "query_time"], "")) ||
+            fixDateTimeText(first(r, ["dateTime", "date_time", "created_at", "createdAt"], "")) ||
+            fixDateTimeText(
+                formatDate(first(r, ["date", "selected_date"], "")) +
+                (
+                    first(r, ["hour", "form_hour"], "") !== "" && first(r, ["minute", "form_minute"], "") !== ""
+                        ? " " + two(first(r, ["hour", "form_hour"], "")) + ":" + two(first(r, ["minute", "form_minute"], ""))
+                        : ""
+                )
+            ) ||
+            "--";
+
+        const item = {
+            queryTime: queryTime,
+            dateTime: queryTime,
+            matchedTime: clean(first(r, ["matchedTime", "matched_time", "forecast_time"], "")) || "--",
+            location: clean(first(r, ["location", "place"], "")) || (county && town ? county + " " + town : "--"),
+
+            weather: clean(first(r, ["weather"], "")) || "--",
+            weatherIcon: clean(first(r, ["weatherIcon", "weather_icon"], "")),
+            temp: clean(first(r, ["temp", "temperature"], "")) || "--",
+            humidity: clean(first(r, ["humidity"], "")) || "--",
+            wind: clean(first(r, ["wind", "wind_speed", "windSpeed"], "")) || "--",
+            apparent: clean(first(r, ["apparent", "apparent_temp", "apparent_temperature"], "")) || "--",
+            rain: clean(first(r, ["rain", "rain_prob", "rain_probability", "rainProbability", "PoP"], "")) || "--",
+
+            coat: clean(first(r, ["coat"], "")) || "--",
+            top: clean(first(r, ["top"], "")) || clothingParts[0] || "--",
+            bottom: clean(first(r, ["bottom"], "")) || clothingParts[1] || "--",
+            umbrella: clean(first(r, ["umbrella"], "")) || "--"
+        };
+
+        item.id = [
+            item.queryTime,
+            item.location,
+            item.matchedTime,
+            item.weather,
+            item.temp,
+            item.humidity,
+            item.wind,
+            item.apparent,
+            item.rain,
+            item.coat,
+            item.top,
+            item.bottom,
+            item.umbrella
+        ].join("|");
+
+        return item;
+    }
+
+    function resultKey(r) {
+        return [
+            r.location,
+            r.matchedTime,
+            r.weather,
+            r.temp,
+            r.humidity,
+            r.wind,
+            r.apparent,
+            r.rain,
+            r.coat,
+            r.top,
+            r.bottom,
+            r.umbrella
+        ].join("|");
+    }
+
+    function storeCurrentRecord() {
+        const current = buildCurrentRecord();
+        if (!current) return;
+
+        let records = readHistory();
+
+        records = records.filter(function (old) {
+            const n = normalize(old);
+
+            if (n.id === current.id) return false;
+
+            // 移除同一次查詢先前被舊腳本存成「目前時間」的錯誤版本。
+            // 已經有 queryTime 的舊紀錄會保留，不會被改成最新一筆。
+            const oldHasQueryTime = clean(old && (old.queryTime || old.query_time));
+            if (!oldHasQueryTime && resultKey(n) === resultKey(current)) return false;
+
+            return true;
+        });
+
+        records.unshift(current);
+        saveHistory(records);
+    }
+
+    function parseRecordDate(record) {
+        const r = normalize(record);
+        const text = clean(r.queryTime);
+        const m = text.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+
+        if (!m) return null;
+
+        return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    }
+
+    function isSameMonth(record) {
+        const d = parseRecordDate(record);
+        if (!d) return true;
+
+        const now = new Date();
+        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    }
+
+    function isSameWeek(record) {
+        const d = parseRecordDate(record);
+        if (!d) return true;
+
+        const now = new Date();
+        const day = now.getDay();
+        const diffToMonday = day === 0 ? -6 : 1 - day;
+
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() + diffToMonday);
+        weekStart.setHours(0, 0, 0, 0);
+
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 7);
+
+        return d >= weekStart && d < weekEnd;
+    }
+
+    function isDisplayable(record) {
+        const r = normalize(record);
+        if (r.location === "--") return false;
+        if (r.weather === "--" && r.temp === "--" && r.humidity === "--") return false;
+        if (r.coat === "--" && r.top === "--" && r.bottom === "--" && r.umbrella === "--") return false;
+        return true;
+    }
+
+    function uniqueRecords(records) {
+        const map = new Map();
+
+        records.forEach(function (item) {
+            const r = normalize(item);
+            if (!map.has(r.id)) {
+                map.set(r.id, r);
             }
         });
 
-        if (changed) {
-            saveHistory(records);
+        return Array.from(map.values());
+    }
+
+    function compareNewest(a, b) {
+        const da = parseRecordDate(a) || new Date(0);
+        const db = parseRecordDate(b) || new Date(0);
+
+        if (db - da !== 0) return db - da;
+
+        return String(normalize(b).queryTime).localeCompare(String(normalize(a).queryTime));
+    }
+
+    function withUnit(value, unit) {
+        if (!value || value === "--") return "--";
+        const text = String(value);
+        if (text.includes(unit)) return text;
+        return text + unit;
+    }
+
+    function weatherIconCode(weather) {
+        const text = String(weather || "");
+        if (text.includes("雷")) return "15";
+        if (text.includes("雨")) return "08";
+        if (text.includes("陰")) return "07";
+        if (text.includes("多雲")) return "03";
+        if (text.includes("晴")) return "01";
+        return "03";
+    }
+
+    function iconSrc(record) {
+        const r = normalize(record);
+        if (r.weatherIcon) return WEATHER_ICON_BASE + r.weatherIcon;
+        return WEATHER_ICON_BASE + weatherIconCode(r.weather) + ".svg";
+    }
+
+    function card(raw) {
+        const r = normalize(raw);
+
+        return `
+            <article class="history-record-card">
+                <div class="history-card-top">
+                    <div>
+                        <div class="history-small-title">查詢時間</div>
+                        <div class="history-time-value">${r.queryTime}</div>
+                    </div>
+                    <div class="history-badge">歷史紀錄</div>
+                </div>
+
+                <div class="history-place">
+                    <div class="history-small-title">查詢地點</div>
+                    <div class="history-location">${r.location}</div>
+                    <div class="history-forecast">使用預報：${r.matchedTime}</div>
+                </div>
+
+                <div class="history-weather-summary">
+                    <img class="history-weather-icon" src="${iconSrc(r)}" alt="${r.weather}">
+                    <div>
+                        <div class="history-weather-label">天氣</div>
+                        <div class="history-weather-text">${r.weather}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="history-weather-label">溫度</div>
+                        <div class="history-temp-value">${withUnit(r.temp, "°C")}</div>
+                    </div>
+                </div>
+
+                <div class="history-stat-grid">
+                    <div class="history-stat">
+                        <div class="history-stat-label">濕度</div>
+                        <div class="history-stat-value">${withUnit(r.humidity, "%")}</div>
+                    </div>
+
+                    <div class="history-stat">
+                        <div class="history-stat-label">風速</div>
+                        <div class="history-stat-value">${withUnit(r.wind, " m/s")}</div>
+                    </div>
+
+                    <div class="history-stat">
+                        <div class="history-stat-label">體感溫度</div>
+                        <div class="history-stat-value">${withUnit(r.apparent, "°C")}</div>
+                    </div>
+
+                    <div class="history-stat">
+                        <div class="history-stat-label">降雨機率</div>
+                        <div class="history-stat-value">${withUnit(r.rain, "%")}</div>
+                    </div>
+                </div>
+
+                <div class="history-outfit-grid">
+                    <span class="history-outfit-chip bg-[#FFF6D8] text-[#7A5A00]">外套：${r.coat}</span>
+                    <span class="history-outfit-chip bg-[#E6F0EA] text-[#3E6B4F]">上衣：${r.top}</span>
+                    <span class="history-outfit-chip bg-[#F5E1D8] text-[#8A4A3A]">下著：${r.bottom}</span>
+                    <span class="history-outfit-chip bg-[#EAF7FF] text-[#2F6F8F]">雨具：${r.umbrella}</span>
+                </div>
+            </article>
+        `;
+    }
+
+    function ensureLoadMoreButton() {
+        const list = document.getElementById("history-record-list");
+        if (!list) return null;
+
+        let wrap = document.getElementById("history-load-more-wrap");
+
+        if (!wrap) {
+            wrap = document.createElement("div");
+            wrap.id = "history-load-more-wrap";
+            wrap.className = "hidden mt-10 flex justify-center";
+            wrap.innerHTML = `
+                <button id="history-load-more-btn" type="button" class="px-10 py-3 rounded-full border border-gray-200 bg-gray-50 text-gray-600 text-sm font-bold">
+                    載入更多
+                    <i class="fa-solid fa-chevron-down ml-2"></i>
+                </button>
+            `;
+            list.insertAdjacentElement("afterend", wrap);
         }
 
-        return changed;
+        return wrap;
     }
-
-    function patchVisibleCards() {
-        const dt = selectedDateTime();
-        const mt = matchedTime();
-
-        if (!dt) return;
-
-        const cards = document.querySelectorAll(".history-record-card");
-
-        cards.forEach(function (card) {
-            const text = card.innerText || "";
-
-            const related =
-                !mt ||
-                text.includes(mt) ||
-                text.includes(dt.split(" ")[0]);
-
-            if (!related) return;
-
-            const divs = Array.from(card.querySelectorAll("div"));
-            const label = divs.find(function (el) {
-                return clean(el.textContent) === "查詢時間";
-            });
-
-            if (label && label.nextElementSibling) {
-                label.nextElementSibling.textContent = dt;
-            }
-        });
-    }
-
-    function runPatch() {
-        patchStorageTime();
-        patchVisibleCards();
-    }
-
-    const oldRenderHistory = window.renderHistory;
 
     window.renderHistory = function () {
-        patchStorageTime();
+        const list = document.getElementById("history-record-list");
+        const input = document.getElementById("history-search-input");
+        if (!list) return;
 
-        if (typeof oldRenderHistory === "function") {
-            oldRenderHistory();
+        const keyword = input ? input.value.trim().toLowerCase() : "";
+
+        let records = uniqueRecords(readHistory().filter(isDisplayable))
+            .filter(function (item) {
+                if (currentHistoryFilter === "month") return isSameMonth(item);
+                if (currentHistoryFilter === "week") return isSameWeek(item);
+                return true;
+            })
+            .filter(function (item) {
+                if (!keyword) return true;
+                return JSON.stringify(normalize(item)).toLowerCase().includes(keyword);
+            })
+            .sort(compareNewest);
+
+        const visible = historyShowAll ? records : records.slice(0, 4);
+
+        if (!records.length) {
+            list.innerHTML = `
+                <div class="col-span-full bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
+                    <div class="font-bold text-gray-700 mb-2">目前沒有歷史紀錄</div>
+                    <div class="text-sm text-gray-400">回首頁完成一次查詢後，這裡會顯示氣象預報與穿搭建議。</div>
+                </div>
+            `;
+
+            const wrap = ensureLoadMoreButton();
+            if (wrap) wrap.classList.add("hidden");
+            return;
         }
 
-        setTimeout(runPatch, 50);
-        setTimeout(runPatch, 200);
+        list.innerHTML = visible.map(card).join("");
+
+        const wrap = ensureLoadMoreButton();
+        const btn = document.getElementById("history-load-more-btn");
+
+        if (wrap && btn) {
+            if (records.length > 4 && !historyShowAll) {
+                wrap.classList.remove("hidden");
+                btn.onclick = function () {
+                    historyShowAll = true;
+                    window.renderHistory();
+                };
+            } else {
+                wrap.classList.add("hidden");
+            }
+        }
     };
 
-    function init() {
-        setTimeout(runPatch, 100);
-        setTimeout(runPatch, 400);
-        setTimeout(function () {
-            if (typeof window.renderHistory === "function") {
+    function bindHistoryControls() {
+        const input = document.getElementById("history-search-input");
+
+        if (input && !input.dataset.queryTimeFinalFix) {
+            input.dataset.queryTimeFinalFix = "true";
+            input.addEventListener("input", function () {
+                historyShowAll = false;
                 window.renderHistory();
-            }
-        }, 700);
+            });
+        }
+
+        document.querySelectorAll(".history-filter-btn").forEach(function (btn) {
+            if (btn.dataset.queryTimeFinalFix) return;
+
+            btn.dataset.queryTimeFinalFix = "true";
+            btn.addEventListener("click", function () {
+                document.querySelectorAll(".history-filter-btn").forEach(function (b) {
+                    b.classList.remove("active");
+                });
+
+                btn.classList.add("active");
+                currentHistoryFilter = btn.dataset.filter || "all";
+                historyShowAll = false;
+                window.renderHistory();
+            });
+        });
+    }
+
+    function run() {
+        storeCurrentRecord();
+        bindHistoryControls();
+
+        setTimeout(window.renderHistory, 100);
+        setTimeout(window.renderHistory, 500);
     }
 
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", init);
+        document.addEventListener("DOMContentLoaded", run);
     } else {
-        init();
+        run();
     }
 
     const oldSwitchTab = window.switchTab;
-
     window.switchTab = function (tabId) {
         if (typeof oldSwitchTab === "function") {
             oldSwitchTab(tabId);
         }
 
         if (tabId === "history") {
-            setTimeout(runPatch, 80);
-            setTimeout(runPatch, 300);
-            setTimeout(function () {
-                if (typeof window.renderHistory === "function") {
-                    window.renderHistory();
-                }
-            }, 500);
+            bindHistoryControls();
+            setTimeout(window.renderHistory, 80);
+            setTimeout(window.renderHistory, 300);
         }
     };
 })();
