@@ -6058,6 +6058,29 @@ function run() {
     });
 })();
 </script>
+
+            <script id="hide-header-extra-icons">
+(function () {
+    function hideIcons() {
+        document.querySelectorAll(".fa-bell, .fa-circle-question, .fa-question-circle").forEach(function (icon) {
+            const clickable = icon.closest("button, a");
+            if (clickable) {
+                clickable.style.display = "none";
+            } else {
+                icon.style.display = "none";
+            }
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", hideIcons);
+    } else {
+        hideIcons();
+    }
+
+    window.addEventListener("load", hideIcons);
+})();
+</script>
             
 </body>
 </html>
