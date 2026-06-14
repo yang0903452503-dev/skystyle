@@ -5918,6 +5918,104 @@ function run() {
     });
 })();
 </script>
+
+            <script id="forecast-panel-label-language-fix">
+(function () {
+    const LABELS = {
+        "繁體中文": {
+            forecast: "使用預報",
+            comfort: "體感狀態",
+            rain: "降雨機率",
+            humidity: "濕度",
+            wind: "風速",
+            apparent: "體感溫度"
+        },
+        "簡體中文": {
+            forecast: "使用预报",
+            comfort: "体感状态",
+            rain: "降雨概率",
+            humidity: "湿度",
+            wind: "风速",
+            apparent: "体感温度"
+        },
+        "English": {
+            forecast: "Forecast",
+            comfort: "Comfort",
+            rain: "Rain Chance",
+            humidity: "Humidity",
+            wind: "Wind Speed",
+            apparent: "Feels Like"
+        }
+    };
+
+    function getLang() {
+        return localStorage.getItem("skystyle_language") || "繁體中文";
+    }
+
+    function getText() {
+        return LABELS[getLang()] || LABELS["繁體中文"];
+    }
+
+    function replaceExactText(el, key) {
+        const t = getText();
+        const raw = (el.textContent || "").trim();
+
+        const patterns = {
+            forecast: /^(使用預報|使用预报|Forecast)\s*[：:]?$/,
+            comfort: /^(體感狀態|体感状态|Comfort)\s*[：:]?$/,
+            rain: /^(降雨機率|降雨概率|Rain Chance)$/,
+            humidity: /^(濕度|湿度|Humidity)$/,
+            wind: /^(風速|风速|Wind Speed)$/,
+            apparent: /^(體感溫度|体感温度|Feels Like)$/
+        };
+
+        if (patterns[key] && patterns[key].test(raw)) {
+            if (key === "forecast" || key === "comfort") {
+                el.textContent = t[key] + "：";
+            } else {
+                el.textContent = t[key];
+            }
+        }
+    }
+
+    function applyForecastPanelLabels() {
+        document.querySelectorAll("body *").forEach(function (el) {
+            const tag = el.tagName ? el.tagName.toLowerCase() : "";
+            if (["script", "style", "input", "select", "option", "textarea"].includes(tag)) return;
+            if (el.children.length > 0) return;
+
+            replaceExactText(el, "forecast");
+            replaceExactText(el, "comfort");
+            replaceExactText(el, "rain");
+            replaceExactText(el, "humidity");
+            replaceExactText(el, "wind");
+            replaceExactText(el, "apparent");
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(applyForecastPanelLabels, 100);
+        setTimeout(applyForecastPanelLabels, 500);
+        setTimeout(applyForecastPanelLabels, 1200);
+    });
+
+    window.addEventListener("load", function () {
+        setTimeout(applyForecastPanelLabels, 100);
+        setTimeout(applyForecastPanelLabels, 500);
+        setTimeout(applyForecastPanelLabels, 1200);
+    });
+
+    document.addEventListener("click", function () {
+        setTimeout(applyForecastPanelLabels, 100);
+        setTimeout(applyForecastPanelLabels, 500);
+    });
+
+    document.addEventListener("change", function () {
+        setTimeout(applyForecastPanelLabels, 100);
+        setTimeout(applyForecastPanelLabels, 500);
+    });
+})();
+</script>
             
 </body>
 </html>
