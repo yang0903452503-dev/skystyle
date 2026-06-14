@@ -5628,6 +5628,233 @@ function run() {
     });
 })();
 </script>
+
+            <script id="api-result-value-translation-patch">
+(function () {
+    const VALUE_MAP = {
+        "簡體中文": {
+            "晴": "晴",
+            "多雲": "多云",
+            "陰": "阴",
+            "晴時多雲": "晴时多云",
+            "多雲時晴": "多云时晴",
+            "短暫陣雨": "短暂阵雨",
+            "短暫雨": "短暂雨",
+            "陣雨": "阵雨",
+            "雷雨": "雷雨",
+            "雷陣雨": "雷阵雨",
+            "短暫雷陣雨": "短暂雷阵雨",
+            "陣雨或雷雨": "阵雨或雷雨",
+            "多雲短暫雨": "多云短暂雨",
+            "陰短暫雨": "阴短暂雨",
+
+            "悶熱": "闷热",
+            "舒適": "舒适",
+            "涼爽": "凉爽",
+            "偏冷": "偏冷",
+            "寒冷": "寒冷",
+            "炎熱": "炎热",
+            "偏熱": "偏热",
+            "溫暖": "温暖",
+
+            "不需穿著外套": "不需穿着外套",
+            "薄外套": "薄外套",
+            "輕薄外套": "轻薄外套",
+            "厚外套": "厚外套",
+
+            "短袖上衣": "短袖上衣",
+            "長袖上衣": "长袖上衣",
+            "無袖上衣 / 背心": "无袖上衣 / 背心",
+            "背心": "背心",
+
+            "及膝短褲": "及膝短裤",
+            "涼感短褲": "凉感短裤",
+            "短褲": "短裤",
+            "七分褲": "七分裤",
+            "長褲": "长裤",
+
+            "可斟酌是否攜帶雨具": "可斟酌是否携带雨具",
+            "建議攜帶雨具": "建议携带雨具",
+            "請攜帶雨具": "请携带雨具",
+            "不需攜帶雨具": "不需携带雨具",
+
+            "外套": "外套",
+            "上衣": "上衣",
+            "下著": "下装",
+            "雨具": "雨具"
+        },
+
+        "English": {
+            "晴": "Sunny",
+            "多雲": "Cloudy",
+            "陰": "Overcast",
+            "晴時多雲": "Sunny to cloudy",
+            "多雲時晴": "Cloudy to sunny",
+            "短暫陣雨": "Brief showers",
+            "短暫雨": "Brief rain",
+            "陣雨": "Showers",
+            "雷雨": "Thunderstorms",
+            "雷陣雨": "Thundershowers",
+            "短暫雷陣雨": "Brief thundershowers",
+            "陣雨或雷雨": "Showers or thunderstorms",
+            "多雲短暫雨": "Cloudy with brief rain",
+            "陰短暫雨": "Overcast with brief rain",
+
+            "悶熱": "Muggy",
+            "舒適": "Comfortable",
+            "涼爽": "Cool",
+            "偏冷": "Chilly",
+            "寒冷": "Cold",
+            "炎熱": "Hot",
+            "偏熱": "Warm",
+            "溫暖": "Warm",
+
+            "不需穿著外套": "No jacket needed",
+            "薄外套": "Light jacket",
+            "輕薄外套": "Light jacket",
+            "厚外套": "Heavy jacket",
+
+            "短袖上衣": "Short-sleeve top",
+            "長袖上衣": "Long-sleeve top",
+            "無袖上衣 / 背心": "Sleeveless top / vest",
+            "背心": "Vest",
+
+            "及膝短褲": "Knee-length shorts",
+            "涼感短褲": "Cooling shorts",
+            "短褲": "Shorts",
+            "七分褲": "Cropped pants",
+            "長褲": "Long pants",
+
+            "可斟酌是否攜帶雨具": "Consider bringing rain gear",
+            "建議攜帶雨具": "Bring rain gear",
+            "請攜帶雨具": "Bring rain gear",
+            "不需攜帶雨具": "No rain gear needed",
+
+            "外套": "Jacket",
+            "上衣": "Top",
+            "下著": "Bottom",
+            "雨具": "Rain Gear"
+        }
+    };
+
+    const SOURCE_KEYS = Object.keys(VALUE_MAP["English"]);
+
+    function getLang() {
+        return localStorage.getItem("skystyle_language") || "繁體中文";
+    }
+
+    function hasSourceValue(text) {
+        return SOURCE_KEYS.includes(String(text || "").trim());
+    }
+
+    function translateValue(value) {
+        const lang = getLang();
+        const text = String(value || "").trim();
+
+        if (lang === "繁體中文") {
+            return text;
+        }
+
+        const map = VALUE_MAP[lang] || {};
+        return map[text] || text;
+    }
+
+    function processElement(el) {
+        if (!el || !el.textContent) return;
+
+        const raw = el.textContent.trim();
+        if (!raw) return;
+
+        const pair = raw.match(/^(.+?[：:])\s*(.+)$/);
+
+        if (pair) {
+            const prefix = pair[1];
+            const value = pair[2].trim();
+
+            if (!el.dataset.apiValueBase && hasSourceValue(value)) {
+                el.dataset.apiValueBase = value;
+            }
+
+            if (el.dataset.apiValueBase) {
+                el.textContent = prefix + " " + translateValue(el.dataset.apiValueBase);
+            }
+
+            return;
+        }
+
+        if (!el.dataset.apiTextBase && hasSourceValue(raw)) {
+            el.dataset.apiTextBase = raw;
+        }
+
+        if (el.dataset.apiTextBase) {
+            el.textContent = translateValue(el.dataset.apiTextBase);
+        }
+    }
+
+    function applyApiResultTranslation() {
+        document.querySelectorAll("body *").forEach(function (el) {
+            const tag = el.tagName ? el.tagName.toLowerCase() : "";
+
+            if (["script", "style", "input", "select", "option", "textarea"].includes(tag)) {
+                return;
+            }
+
+            if (el.children.length > 0) {
+                return;
+            }
+
+            processElement(el);
+        });
+    }
+
+    let timer = null;
+
+    function scheduleApply() {
+        clearTimeout(timer);
+        timer = setTimeout(applyApiResultTranslation, 120);
+    }
+
+    document.addEventListener("click", function () {
+        setTimeout(applyApiResultTranslation, 80);
+        setTimeout(applyApiResultTranslation, 400);
+        setTimeout(applyApiResultTranslation, 1000);
+    });
+
+    document.addEventListener("change", function () {
+        setTimeout(applyApiResultTranslation, 80);
+        setTimeout(applyApiResultTranslation, 400);
+        setTimeout(applyApiResultTranslation, 1000);
+    });
+
+    const observer = new MutationObserver(scheduleApply);
+
+    function start() {
+        applyApiResultTranslation();
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+
+        setTimeout(applyApiResultTranslation, 300);
+        setTimeout(applyApiResultTranslation, 1000);
+        setTimeout(applyApiResultTranslation, 2000);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start);
+    } else {
+        start();
+    }
+
+    window.addEventListener("load", function () {
+        setTimeout(applyApiResultTranslation, 300);
+        setTimeout(applyApiResultTranslation, 1000);
+        setTimeout(applyApiResultTranslation, 2000);
+    });
+})();
+</script>
             
 </body>
 </html>
