@@ -1092,8 +1092,8 @@ def home():
                 "coat": outfit["coat"]
             }
 
-        if rain_prob_number is not None and rain_prob_number >= 60:
-    result["umbrella"] = "需要攜帶雨具"
+            if rain_prob_number is not None and rain_prob_number >= 60:
+                result["umbrella"] = "需要攜帶雨具"
 
         except Exception as e:
             error = str(e)
