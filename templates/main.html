@@ -4859,9 +4859,7 @@ function run() {
     const STORAGE_KEY = "skystyle_history";
 
     function clean(v) {
-        const t = String(v ?? "").trim();
-        if (!t || t === "--") return "";
-        return t;
+        return String(v ?? "").trim();
     }
 
     function first(obj, keys) {
@@ -4871,41 +4869,6 @@ function run() {
             }
         }
         return "";
-    }
-
-    function hasClockTime(record) {
-        const t =
-            first(record, ["queryTime", "query_time"]) ||
-            first(record, ["dateTime", "date_time", "created_at", "createdAt"]) ||
-            "";
-
-        return /\d{1,2}:\d{2}/.test(String(t));
-    }
-
-    function resultKey(record) {
-        const r = record || {};
-
-        const county = clean(first(r, ["county", "city"]));
-        const town = clean(first(r, ["town", "district"]));
-
-        const location =
-            clean(first(r, ["location", "place"])) ||
-            (county && town ? county + " " + town : "");
-
-        return [
-            location,
-            clean(first(r, ["matchedTime", "matched_time", "forecast_time"])),
-            clean(first(r, ["weather"])),
-            clean(first(r, ["temp", "temperature"])),
-            clean(first(r, ["humidity"])),
-            clean(first(r, ["wind", "wind_speed", "windSpeed"])),
-            clean(first(r, ["apparent", "apparent_temp", "apparent_temperature"])),
-            clean(first(r, ["rain", "rain_prob", "rain_probability", "rainProbability", "PoP"])),
-            clean(first(r, ["coat"])),
-            clean(first(r, ["top"])),
-            clean(first(r, ["bottom"])),
-            clean(first(r, ["umbrella"]))
-        ].join("|");
     }
 
     function readHistory() {
@@ -4921,63 +4884,142 @@ function run() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(records.slice(0, 80)));
     }
 
-    function keepTimedVersionOnly() {
-        const records = readHistory();
+    function getQueryTime(record) {
+        return clean(
+            first(record, [
+                "queryTime",
+                "query_time",
+                "dateTime",
+                "date_time",
+                "created_at",
+                "createdAt"
+            ])
+        );
+    }
 
-        const timedKeys = new Set();
+    function getDateOnly(timeText) {
+        const text = clean(timeText);
+        const match = text.match(/\d{4}\/\d{1,2}\/\d{1,2}/);
+        return match ? match[0] : text;
+    }
+
+    function hasClockTime(record) {
+        return /\d{1,2}:\d{2}/.test(getQueryTime(record));
+    }
+
+    function getLocation(record) {
+        const location = clean(first(record, ["location", "place"]));
+
+        if (location) {
+            return location.replace(/\s+/g, "");
+        }
+
+        const county = clean(first(record, ["county", "city"]));
+        const town = clean(first(record, ["town", "district"]));
+
+        return (county + town).replace(/\s+/g, "");
+    }
+
+    function getMatchedTime(record) {
+        return clean(
+            first(record, [
+                "matchedTime",
+                "matched_time",
+                "forecast_time",
+                "forecastTime"
+            ])
+        );
+    }
+
+    function groupKey(record) {
+        return [
+            getDateOnly(getQueryTime(record)),
+            getLocation(record),
+            getMatchedTime(record)
+        ].join("|");
+    }
+
+    function exactKey(record) {
+        return [
+            getQueryTime(record),
+            getLocation(record),
+            getMatchedTime(record),
+            clean(first(record, ["weather"])),
+            clean(first(record, ["temp", "temperature"])),
+            clean(first(record, ["humidity"])),
+            clean(first(record, ["wind", "wind_speed", "windSpeed"])),
+            clean(first(record, ["apparent", "apparent_temp", "apparent_temperature"])),
+            clean(first(record, ["rain", "rain_prob", "rain_probability", "rainProbability", "PoP"]))
+        ].join("|");
+    }
+
+    function cleanHistoryKeepTimedOnly() {
+        const records = readHistory();
+        if (!records.length) return false;
+
+        const timedGroupKeys = new Set();
 
         records.forEach(function (record) {
             if (hasClockTime(record)) {
-                timedKeys.add(resultKey(record));
+                timedGroupKeys.add(groupKey(record));
             }
         });
 
-        const seen = new Set();
+        const seenExact = new Set();
 
         const cleaned = records.filter(function (record) {
-            const key = resultKey(record);
+            const gKey = groupKey(record);
+            const eKey = exactKey(record);
             const timed = hasClockTime(record);
 
-            if (!timed && timedKeys.has(key)) {
+            if (!timed && timedGroupKeys.has(gKey)) {
                 return false;
             }
 
-            const exactKey = (timed ? "time|" : "date|") + key + "|" + JSON.stringify(record);
-            if (seen.has(exactKey)) {
+            if (seenExact.has(eKey)) {
                 return false;
             }
 
-            seen.add(exactKey);
+            seenExact.add(eKey);
             return true;
         });
 
-        saveHistory(cleaned);
+        if (cleaned.length !== records.length) {
+            saveHistory(cleaned);
+            return true;
+        }
+
+        return false;
     }
 
     const oldRenderHistory = window.renderHistory;
 
     window.renderHistory = function () {
-        keepTimedVersionOnly();
+        cleanHistoryKeepTimedOnly();
 
         if (typeof oldRenderHistory === "function") {
             oldRenderHistory();
         }
-
-        setTimeout(keepTimedVersionOnly, 100);
     };
 
-    function runPatch() {
-        keepTimedVersionOnly();
+    function runFix() {
+        const changed = cleanHistoryKeepTimedOnly();
 
-        if (typeof oldRenderHistory === "function") {
+        if (changed && typeof oldRenderHistory === "function") {
             oldRenderHistory();
         }
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(runPatch, 500);
-        setTimeout(runPatch, 1200);
-        setTimeout(runPatch, 2200);
+        setTimeout(runFix, 300);
+        setTimeout(runFix, 1000);
+        setTimeout(runFix, 2000);
+    });
+
+    window.addEventListener("load", function () {
+        setTimeout(runFix, 300);
+        setTimeout(runFix, 1000);
+        setTimeout(runFix, 2000);
     });
 
     const oldSwitchTab = window.switchTab;
@@ -4988,9 +5030,9 @@ function run() {
         }
 
         if (tabId === "history") {
-            setTimeout(runPatch, 500);
-            setTimeout(runPatch, 1200);
-            setTimeout(runPatch, 2200);
+            setTimeout(runFix, 100);
+            setTimeout(runFix, 500);
+            setTimeout(runFix, 1200);
         }
     };
 })();
