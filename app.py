@@ -1093,7 +1093,7 @@ def home():
             }
 
         if rain_prob_number is not None and rain_prob_number >= 60:
-    result["umbrella"] = "建議攜帶雨具"
+    result["umbrella"] = "需要攜帶雨具"
 
         except Exception as e:
             error = str(e)
