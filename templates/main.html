@@ -5855,6 +5855,59 @@ function run() {
     });
 })();
 </script>
+
+            <script id="weather-forecast-badge-language-fix">
+(function () {
+    const BADGE_TEXT = {
+        "繁體中文": "天氣預測結果",
+        "簡體中文": "天气预测结果",
+        "English": "Weather Forecast"
+    };
+
+    function getLang() {
+        return localStorage.getItem("skystyle_language") || "繁體中文";
+    }
+
+    function applyBadgeText() {
+        const lang = getLang();
+        const text = BADGE_TEXT[lang] || BADGE_TEXT["繁體中文"];
+
+        document.querySelectorAll("span, div").forEach(function (el) {
+            const current = (el.textContent || "").trim();
+
+            if (
+                current === "天氣預測結果" ||
+                current === "天气预测结果" ||
+                current === "Weather Forecast"
+            ) {
+                el.textContent = text;
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(applyBadgeText, 100);
+        setTimeout(applyBadgeText, 500);
+        setTimeout(applyBadgeText, 1200);
+    });
+
+    window.addEventListener("load", function () {
+        setTimeout(applyBadgeText, 100);
+        setTimeout(applyBadgeText, 500);
+        setTimeout(applyBadgeText, 1200);
+    });
+
+    document.addEventListener("click", function () {
+        setTimeout(applyBadgeText, 100);
+        setTimeout(applyBadgeText, 500);
+    });
+
+    document.addEventListener("change", function () {
+        setTimeout(applyBadgeText, 100);
+        setTimeout(applyBadgeText, 500);
+    });
+})();
+</script>
             
 </body>
 </html>
